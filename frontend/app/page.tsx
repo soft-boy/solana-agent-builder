@@ -10,6 +10,8 @@ import SolanaIcon from '@/components/solana-icon'
 import { ConversationDrawer } from '@/components/conversation-drawer'
 import { HowItWorksDialog } from '@/components/how-it-works-dialog'
 import Footer from '@/components/footer'
+import VoiceWave from '@/components/voice-wave'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const conversations = [
   { id: 1, title: "Introduction to Solana", date: "2023-05-15" },
@@ -44,10 +46,15 @@ export default function Chat() {
   ])
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isMicActive, setIsMicActive] = useState(false)
   const chatWindowRef = useRef<HTMLDivElement>(null)
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen)
+  }
+
+  const toggleMic = () => {
+    setIsMicActive(!isMicActive)
   }
 
   useEffect(() => {
@@ -134,13 +141,42 @@ export default function Chat() {
           </div>
 
           <div className="p-4 border-t border-border">
-            <div className="max-w-screen-md mx-auto flex justify-center">
+            <div className="max-w-screen-md mx-auto flex flex-col items-center space-y-2">
               <Button 
                 size="lg"
-                className="rounded-full px-6 py-6 text-sm font-medium shadow-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white transition-all duration-300 ease-in-out"
+                className={`rounded-full px-6 py-6 text-sm font-medium shadow-lg text-white transition-all duration-300 ease-in-out ${
+                  isMicActive 
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700' 
+                    : 'bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-600 hover:to-teal-500'
+                }`}
+                onClick={toggleMic}
               >
-                <Mic className="mr-2 h-5 w-5" />
-                Click to turn on Microphone
+                <div className="flex items-center space-x-2">
+                  <AnimatePresence mode="wait" initial={false}>
+                    {isMicActive ? (
+                      <motion.div
+                        key="voice-wave"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <VoiceWave isActive={isMicActive} />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="mic-icon"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Mic className="h-5 w-5" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <span>{isMicActive ? 'Listening...' : 'Click to turn on Microphone'}</span>
+                </div>
               </Button>
             </div>
           </div>

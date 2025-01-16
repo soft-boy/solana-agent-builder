@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Lexend } from 'next/font/google'
 import { ThemeProvider } from "@/components/theme-provider"
+import DynamicSolanaWalletProvider from '@/components/providers/DynamicSolanaWalletProvider'
 
 const lexend = Lexend({ subsets: ['latin'] })
 
@@ -24,7 +25,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <DynamicSolanaWalletProvider>
+            {children}
+          </DynamicSolanaWalletProvider>
         </ThemeProvider>
       </body>
     </html>
