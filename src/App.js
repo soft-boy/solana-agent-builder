@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import Drawer from './components/Drawer.js';
 import {
   ReactFlow,
   MiniMap,
@@ -28,6 +29,7 @@ export default function App() {
  
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      <Drawer ></Drawer>
       <ReactFlow
         nodes={nodes}
         edges={edges}
