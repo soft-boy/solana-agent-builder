@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Mic } from 'lucide-react'
-import { ThemeToggle } from './components/theme-toggle'
-import Disclaimer from './components/disclaimer'
-import { WalletDialog } from './components/wallet-dialog'
-import SolanaIcon from './components/solana-icon'
-import { ConversationDrawer } from './components/conversation-drawer'
-import { HowItWorksDialog } from './components/how-it-works-dialog'
-import Footer from './components/footer'
+import { ThemeToggle } from '@/components/theme-toggle'
+import Disclaimer from '@/components/disclaimer'
+import { WalletDialog } from '@/components/wallet-dialog'
+import SolanaIcon from '@/components/solana-icon'
+import { ConversationDrawer } from '@/components/conversation-drawer'
+import { HowItWorksDialog } from '@/components/how-it-works-dialog'
+import Footer from '@/components/footer'
 
 const conversations = [
   { id: 1, title: "Introduction to Solana", date: "2023-05-15" },
