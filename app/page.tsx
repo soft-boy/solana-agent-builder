@@ -3,15 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Mic } from 'lucide-react'
-import { ThemeToggle } from '@/components/theme-toggle'
 import Disclaimer from '@/components/disclaimer'
-import { WalletDialog } from '@/components/wallet-dialog'
-import SolanaIcon from '@/components/solana-icon'
-import { ConversationDrawer } from '@/components/conversation-drawer'
-import { HowItWorksDialog } from '@/components/how-it-works-dialog'
 import Footer from '@/components/footer'
 import VoiceWave from '@/components/voice-wave'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Header } from '@/components/header'
 
 const conversations = [
   { id: 1, title: "Introduction to Solana", date: "2023-05-15" },
@@ -65,27 +61,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
-      <header className="sticky top-0 z-10 bg-background border-b border-border px-4 py-3 flex items-center justify-between transition-colors duration-300">
-        <div className="flex items-center space-x-2">
-          <ConversationDrawer isOpen={isDrawerOpen} onToggle={toggleDrawer} />
-          <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary-foreground" fill="none" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-          </div>
-          <span className="text-sm font-medium">Solana AI Agent for Brookies</span>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <HowItWorksDialog />
-          <Button variant="ghost" size="sm" className="glow-effect h-7 px-3 text-xs font-normal hover:bg-accent hover:text-accent-foreground transition-all duration-300 ease-in-out shadow-sm hover:shadow-md hover:shadow-green-100/50 dark:hover:shadow-green-900/50">
-            <SolanaIcon className="mr-1.5 h-3 w-3" />
-            Buy Crypto
-          </Button>
-          <WalletDialog />
-          <ThemeToggle />
-        </div>
-      </header>
+      <Header isDrawerOpen={isDrawerOpen} onToggleDrawer={toggleDrawer} />
 
       <div className="flex flex-grow overflow-hidden">
         <aside className={`hidden md:block ${isDrawerOpen ? 'w-64' : 'w-0'} overflow-y-auto border-r border-border transition-all duration-300`}>
