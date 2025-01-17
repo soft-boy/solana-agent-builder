@@ -81,7 +81,6 @@ export function ChatDrawer({ isOpen, onToggle, AgentName }: ChatDrawerProps) {
     
             // If there's any final transcript, update messages
             if (finalTranscript) {
-                // Push the final transcript as a new message from the user
                 setMessages((prev) => [
                     ...prev,
                     {
@@ -97,7 +96,7 @@ export function ChatDrawer({ isOpen, onToggle, AgentName }: ChatDrawerProps) {
                 setMessages((prev) => {
                     const updatedMessages = [...prev];
                     const lastMessage = updatedMessages[updatedMessages.length - 1];
-                    
+    
                     // If the last message was from the user and it’s being updated with an interim result
                     if (lastMessage && lastMessage.role === 'user') {
                         updatedMessages[updatedMessages.length - 1] = {
@@ -105,12 +104,9 @@ export function ChatDrawer({ isOpen, onToggle, AgentName }: ChatDrawerProps) {
                             content: interimTranscript.trim(),  // Update with the interim result
                         };
                     } else if (!lastMessage || lastMessage.role !== 'user') {
-                        // If the last message wasn't from the user, create a new message for the interim result
-                        updatedMessages.push({
-                            role: 'user',
-                            content: interimTranscript.trim(),
-                            timestamp: new Date().toLocaleTimeString(),
-                        });
+                        // If there's no user message or last message wasn't from the user,
+                        // do NOT push a new one just for interim results
+                        // We should only update the last message or wait for final result
                     }
                     return updatedMessages;
                 });
@@ -140,7 +136,6 @@ export function ChatDrawer({ isOpen, onToggle, AgentName }: ChatDrawerProps) {
     };
     
     
-
     const startSpeechRecognition = async () => {
         try {
           const recognition = initializeSpeechRecognition();
