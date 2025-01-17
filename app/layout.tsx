@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Lexend } from 'next/font/google'
 import { ThemeProvider } from "@/components/theme-provider"
 import DynamicSolanaWalletProvider from '@/components/providers/DynamicSolanaWalletProvider'
+import { Toaster } from 'sonner'
 
 const lexend = Lexend({ subsets: ['latin'] })
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={lexend.className}>
+        <Toaster />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
