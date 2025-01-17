@@ -4,22 +4,26 @@ import { motion } from 'framer-motion'
 
 interface VoiceWaveProps {
   isActive: boolean
+  volume: number
 }
 
-const VoiceWave: React.FC<VoiceWaveProps> = ({ isActive }) => {
+const VoiceWave: React.FC<VoiceWaveProps> = ({ isActive, volume }) => {
+  const bars = [0, 1, 2]
+  const maxHeight = 18
+
   return (
     <div className="flex items-center justify-center space-x-0.5 h-5 w-5">
-      {[0, 1, 2].map((index) => (
+      {bars.map((index) => (
         <motion.div
           key={index}
           className="w-1 bg-white/80"
           animate={{
-            height: isActive ? [6, 12, 18, 12, 6] : 6,
+            height: isActive ? [6, Math.max(6, volume * maxHeight), 6] : 6,
           }}
           transition={{
-            duration: 1,
+            duration: 0.5,
             repeat: Infinity,
-            repeatType: 'loop',
+            repeatType: 'reverse',
             ease: "easeInOut",
             delay: index * 0.2,
           }}
