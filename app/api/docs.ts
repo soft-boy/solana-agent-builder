@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from '../../../swagger'; // Adjust the path as needed
+import swaggerSpec from '../../swagger'; // Adjust the path as needed
 
 export const config = {
   api: {

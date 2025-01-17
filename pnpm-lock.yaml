@@ -96,6 +96,9 @@ importers:
       '@types/react-speech-recognition':
         specifier: ^3.9.6
         version: 3.9.6
+      '@types/swagger-ui-express':
+        specifier: ^4.1.7
+        version: 4.1.7
       eslint:
         specifier: ^9
         version: 9.18.0(jiti@1.21.7)
@@ -2707,6 +2710,9 @@ packages:
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
+
+  '@types/swagger-ui-express@4.1.7':
+    resolution: {integrity: sha512-ovLM9dNincXkzH4YwyYpll75vhzPBlWx6La89wwvYH7mHjVpf0X0K/vR/aUM7SRxmr5tt9z7E5XJcjQ46q+S3g==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -11126,6 +11132,11 @@ snapshots:
       '@types/send': 0.17.4
 
   '@types/stack-utils@2.0.3': {}
+
+  '@types/swagger-ui-express@4.1.7':
+    dependencies:
+      '@types/express': 4.17.21
+      '@types/serve-static': 1.15.7
 
   '@types/unist@3.0.3': {}
 
