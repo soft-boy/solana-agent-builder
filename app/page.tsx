@@ -46,7 +46,16 @@ export default function Chat() {
   const chatWindowRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
 
+  const toggleMic = () => {
+    if (isMicActive) {
+      stopSpeechRecognition()
+    } else {
+      startSpeechRecognition()
+    }
+  }
+
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen)
+  
 
   const initializeSpeechRecognition = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -128,68 +137,72 @@ export default function Chat() {
     return recognition;
   };
 
-  const toggleMic = () => {
-    if (isMicActive) {
-      stopSpeechRecognition()
-    } else {
-      startSpeechRecognition()
-    }
-  }
-
   const startSpeechRecognition = async () => {
     try {
       const recognition = initializeSpeechRecognition();
       if (!recognition) return;
-  
+
       // Setup AudioContext to capture microphone input
       const audioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
-      const microphone = await navigator.mediaDevices.getUserMedia({ audio: true });
-  
+
+      let microphone;
+      try {
+        // Try to get user media for both mobile and desktop
+        microphone = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (error) {
+        console.error('Error accessing microphone:', error);
+        toast.error('Failed to access microphone. Please check your permissions.');
+        return;
+      }
+
       const microphoneStream = audioContext.createMediaStreamSource(microphone);
       microphoneStream.connect(analyser);
-  
+
       analyser.fftSize = 256;
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-  
+
       const updateVolume = () => {
         analyser.getByteFrequencyData(dataArray);
-  
-        // Get the average volume (loudness) from the frequency data
+
         let sum = 0;
         for (let i = 0; i < dataArray.length; i++) {
           sum += dataArray[i];
         }
+
         const averageVolume = sum / dataArray.length;
-  
-        // Normalize the volume to a range of 0-1 for the voice wave component
         const normalizedVolume = Math.min(1, averageVolume / 256);
-        setVolume(normalizedVolume); // Update the volume state
+
+        setVolume(normalizedVolume);
       };
-  
-      const volumeInterval = setInterval(updateVolume, 100); // Update volume every 100ms
-  
+
+      const volumeInterval = setInterval(updateVolume, 100);
+
       recognitionRef.current = recognition;
       recognition.start();
-  
+
       recognition.onend = () => {
-        clearInterval(volumeInterval); // Clean up when recognition ends
+        clearInterval(volumeInterval);
+        microphone.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       };
+
     } catch (error) {
       console.error('Error starting speech recognition:', error);
       toast.error('Failed to start speech recognition.');
     }
   };
   
+  
 
   const stopSpeechRecognition = () => {
     if (recognitionRef.current) {
-      recognitionRef.current.stop()
-      recognitionRef.current = null
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
     }
-    setIsMicActive(false)
-  }
+    setIsMicActive(false);
+    setVolume(0); // Reset volume when stopping
+  };
 
   useEffect(() => {
     if (chatWindowRef.current) {
@@ -279,7 +292,7 @@ export default function Chat() {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <VoiceWave isActive={isMicActive} volume={volume} />
+                        <VoiceWave isActive={isMicActive} />
                       </motion.div>
                     ) : (
                       <motion.div
@@ -293,7 +306,7 @@ export default function Chat() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  <span>{isMicActive ? 'Listening...' : 'Click to turn on Microphone'}</span>
+                  <span>{isMicActive ? '' : 'Click to turn on Microphone'}</span>
                 </div>
               </Button>
             </div>
@@ -306,3 +319,4 @@ export default function Chat() {
     </div>
   )
 }
+

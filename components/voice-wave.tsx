@@ -4,34 +4,60 @@ import { motion } from 'framer-motion'
 
 interface VoiceWaveProps {
   isActive: boolean
-  volume: number
 }
 
-const VoiceWave: React.FC<VoiceWaveProps> = ({ isActive, volume }) => {
-  const bars = [0, 1, 2]
-  const maxHeight = 18
-
+const VoiceWave = ({ isActive }: VoiceWaveProps) => {
   return (
-    <div className="flex items-center justify-center space-x-0.5 h-5 w-5">
-      {bars.map((index) => (
-        <motion.div
-          key={index}
-          className="w-1 bg-white/80"
+    <div className="flex items-center gap-2 px-4 py-2 rounded-full">
+      <motion.div
+        className="relative w-4 h-4"
+        animate={{
+          scale: isActive ? [1, 1.2, 1] : 1,
+        }}
+        transition={{
+          duration: 1,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <motion.div 
+          className="absolute inset-0"
+          initial={{ opacity: 0.3 }}
           animate={{
-            height: isActive ? [6, Math.max(6, volume * maxHeight), 6] : 6,
+            opacity: [0.3, 1, 0.3],
+            scale: [1, 1.2, 1],
           }}
           transition={{
-            duration: 0.5,
+            duration: 1,
             repeat: Infinity,
-            repeatType: 'reverse',
             ease: "easeInOut",
-            delay: index * 0.2,
+            times: [0, 0.5, 1],
           }}
-        />
-      ))}
+        >
+          <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+            <path
+              d="M12 3V21M8 7V17M16 7V17M4 11V13M20 11V13"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.div>
+      </motion.div>
+      <span className="text-white font-medium">Listening...</span>
     </div>
   )
 }
 
 export default VoiceWave
+
+// Example usage:
+export function Demo() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <VoiceWave isActive={true} />
+    </div>
+  )
+}
 
