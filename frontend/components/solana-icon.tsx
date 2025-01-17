@@ -1,6 +1,6 @@
 import React from 'react'
 
-interface SolanaIconProps extends React.SVGProps<SVGSVGElement> {}
+type SolanaIconProps = React.SVGProps<SVGSVGElement>
 
 const SolanaIcon: React.FC<SolanaIconProps> = (props) => {
   return (
