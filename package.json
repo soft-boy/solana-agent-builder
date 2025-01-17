@@ -27,6 +27,7 @@
     "react-speech-kit": "^3.0.1",
     "react-speech-recognition": "^3.10.0",
     "sonner": "^1.7.2",
+    "solana-agent-kit": "^1.4.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7"
   },
