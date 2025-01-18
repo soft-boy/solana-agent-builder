@@ -13,6 +13,15 @@
   }
 }
 
+body {
+  overflow-x: hidden;
+}
+
+/* Optional: Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
