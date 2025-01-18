@@ -38,7 +38,7 @@ export default function AlphaDisclaimer() {
           <h2 className="text-4xl font-bold text-center">Solana AI Agent Project: Alpha Version</h2>
         </div>
         <p className="text-xl mb-8 text-center max-w-3xl mx-auto">
-          Listen up, you're about to dive into a powerful AI system, still in the alpha phase. Stay alert, keep your mind sharp, and be ready to handle the raw, untamed intelligence. Let’s break it down:
+          Listen up, you're about to dive into a powerful AI system, still in the alpha phase. Stay alert, keep your mind sharp, and be ready to handle the raw, untamed intelligence. Let’s break it down:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="flex items-start gap-4">
