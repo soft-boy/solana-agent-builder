@@ -21,10 +21,7 @@ const FlowEditor = () => {
   const editorRef = useRef(null);
 
   const onConnect = useCallback(
-    (params) => {
-      console.log('Edge connected:', params); // Log when edges are connected
-      setEdges((eds) => addEdge(params, eds));
-    },
+    (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
@@ -53,7 +50,6 @@ const FlowEditor = () => {
         targetPosition: 'left',
       };
 
-      console.log('New node dropped:', newNode); // Log node creation
       setNodes((nds) => [...nds, newNode]);
     },
     collect: (monitor) => ({
@@ -63,12 +59,10 @@ const FlowEditor = () => {
 
   const handleNodeClick = (event, node) => {
     event.stopPropagation(); // Prevent ReactFlow from intercepting the click
-    console.log('Node clicked:', node); // Log the clicked node
     setSelectedNode(node); // Set the selected node
   };
 
   const updateNodeData = (id, updatedData) => {
-    console.log('Updating node data:', { id, updatedData }); // Log data updates
     setNodes((nds) =>
       nds.map((node) =>
         node.id === id ? { ...node, data: { ...node.data, ...updatedData } } : node
@@ -109,10 +103,7 @@ const FlowEditor = () => {
         <TalkDrawer
           isOpen={!!selectedNode}
           blockData={selectedNode.data}
-          closeDrawer={() => {
-            console.log('Closing TalkDrawer'); // Log drawer closing
-            setSelectedNode(null);
-          }}
+          closeDrawer={() => setSelectedNode(null)}
           updateBlock={(updatedData) => updateNodeData(selectedNode.id, updatedData)}
         />
       )}
@@ -120,10 +111,7 @@ const FlowEditor = () => {
         <ListenDrawer
           isOpen={!!selectedNode}
           blockData={selectedNode.data}
-          closeDrawer={() => {
-            console.log('Closing ListenDrawer'); // Log drawer closing
-            setSelectedNode(null);
-          }}
+          closeDrawer={() => setSelectedNode(null)}
           updateBlock={(updatedData) => updateNodeData(selectedNode.id, updatedData)}
         />
       )}
