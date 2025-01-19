@@ -1,12 +1,14 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { FaCommentDots, FaMicrophone, FaRobot, FaCode, FaBitcoin } from 'react-icons/fa';
+import { FaCommentDots, FaMicrophone, FaCode} from 'react-icons/fa';
+import { SiSolana } from "react-icons/si";
+import { RiRobot2Fill } from "react-icons/ri";
 
 const tools = [
   { id: 'talk', name: 'Talk', icon: <FaCommentDots />, tooltip: 'Add a Talk block to communicate.' },
   { id: 'listen', name: 'Listen', icon: <FaMicrophone />, tooltip: 'Add a Listen block to capture input.' },
-  { id: 'ai', name: 'AI', icon: <FaRobot />, tooltip: 'Add an AI block for intelligent actions.' },
-  { id: 'solana', name: 'Solana', icon: <FaBitcoin />, tooltip: 'Add a Solana block for blockchain tasks.' },
+  { id: 'ai', name: 'AI', icon: <RiRobot2Fill />, tooltip: 'Add an AI block for intelligent actions.' },
+  { id: 'solana', name: 'Solana', icon: <SiSolana />, tooltip: 'Add a Solana block for blockchain tasks.' },
   { id: 'api', name: 'API', icon: <FaCode />, tooltip: 'Add an API block to integrate services.' },
 ];
 

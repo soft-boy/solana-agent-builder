@@ -10,14 +10,7 @@ const NavBar = ({ toggleDemo }) => {
       </div>
 
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          <li>
-            <a className="hover:text-primary">Home</a>
-          </li>
-          <li>
-            <a className="hover:text-primary">About</a>
-          </li>
-        </ul>
+        
       </div>
 
       <div className="navbar-end">
