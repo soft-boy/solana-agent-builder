@@ -13,7 +13,7 @@ import { createClient } from "@supabase/supabase-js";
 import { useDrop } from 'react-dnd';
 import Toolbox from './Toolbox';
 import TalkDrawer from './TalkDrawer';
-import ListenDrawer from './ListenDrawer'; // Add similar for other block types
+import ListenDrawer from './ListenDrawer';
 import AiDrawer from './AiDrawer';
 import ApiDrawer from './ApiDrawer';
 import '@xyflow/react/dist/style.css';
@@ -25,43 +25,34 @@ const supabase = createClient(
 
 window.supabase = supabase;
 
-const startNode = {
-  id: `node-start`,
-  position: { x: 200, y: 400 },
-  data: {
-    label: 'start',
-    type: 'start', // Store the block type
-  },
-  style: { width: 200 },
-  sourcePosition: 'right',
-  targetPosition: 'left',
-}
-
-const FlowEditor = () => {
+const FlowEditor = ({ agentId }) => {
   const reactFlow = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [selectedNode, setSelectedNode] = useState(null); // Track the selected node
+  const [selectedNode, setSelectedNode] = useState(null);
   const editorRef = useRef(null);
-
-  window.reactFlow = reactFlow
 
   useEffect(() => {
     const fetchFlowchart = async () => {
-      let { data: flowchart } = await supabase
+      let { data } = await supabase
         .from('flowcharts')
-        .select('*')
-        .eq('id', 1)
+        .select('data')
+        .eq('id', agentId) // Fetch flowchart by agentId
         .single();
 
-      if (flowchart.data) {
-        setNodes(flowchart.data.nodes)
-        setEdges(flowchart.data.edges)
+      if (data?.data) {
+        setNodes(data.data.nodes || []);
+        setEdges(data.data.edges || []);
+      } else {
+        setNodes([]);
+        setEdges([]);
       }
-    }
 
-    fetchFlowchart() 
-  }, [])
+      reactFlow.fitView(); // Reset the view for the new agent
+    };
+
+    fetchFlowchart();
+  }, [agentId, setNodes, setEdges, reactFlow]);
 
   const saveFlowchart = async (updatedNodes, updatedEdges) => {
     const flowchartData = {
@@ -71,26 +62,24 @@ const FlowEditor = () => {
 
     const { error } = await supabase
       .from('flowcharts')
-      .update({
+      .upsert({
+        id: agentId, // Save using the agentId
         data: flowchartData,
-      })
-      .eq('id', 1)
-      .select();
+      });
 
     if (error) {
       console.error('Error saving flowchart:', error);
     } else {
       console.log('Flowchart saved successfully!');
     }
-  }
-
-  const handleFlowchartChange = () => {
-    saveFlowchart(nodes, edges);
   };
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+    (params) => {
+      setEdges((eds) => addEdge(params, eds));
+      saveFlowchart(nodes, edges);
+    },
+    [setEdges, nodes, edges]
   );
 
   const [{ isOver }, drop] = useDrop(() => ({
@@ -99,7 +88,7 @@ const FlowEditor = () => {
       const canvasBounds = editorRef.current.getBoundingClientRect();
       const clientOffset = monitor.getClientOffset();
 
-      if (!clientOffset) return; // Ensure the offset is valid
+      if (!clientOffset) return;
 
       const position = {
         x: clientOffset.x - canvasBounds.left,
@@ -111,7 +100,7 @@ const FlowEditor = () => {
         position,
         data: {
           label: item.id.charAt(0).toUpperCase() + item.id.slice(1),
-          type: item.id, // Store the block type
+          type: item.id,
         },
         style: { width: 200 },
         sourcePosition: 'right',
@@ -126,8 +115,8 @@ const FlowEditor = () => {
   }));
 
   const handleNodeClick = (event, node) => {
-    event.stopPropagation(); // Prevent ReactFlow from intercepting the click
-    setSelectedNode(node); // Set the selected node
+    event.stopPropagation();
+    setSelectedNode(node);
   };
 
   const updateNodeData = (id, updatedData) => {
@@ -149,25 +138,23 @@ const FlowEditor = () => {
         className={`flex-1 ${isOver ? 'bg-gray-200' : 'bg-white'}`}
       >
         <ReactFlow
+          key={agentId} // Force ReactFlow to reinitialize for each agent
           nodes={nodes.map((node) => ({
             ...node,
-            onClick: (event) => handleNodeClick(event, node), // Attach click handler to each node
+            onClick: (event) => handleNodeClick(event, node),
           }))}
           edges={edges}
           onNodesChange={(changes) => {
             onNodesChange(changes);
-            handleFlowchartChange(); // Save on node changes
+            saveFlowchart(nodes, edges);
           }}
           onEdgesChange={(changes) => {
             onEdgesChange(changes);
-            handleFlowchartChange(); // Save on edge changes
+            saveFlowchart(nodes, edges);
           }}
-          onConnect={(connection) => {
-            onConnect(connection);
-            handleFlowchartChange(); // Save on new connections
-          }}
+          onConnect={onConnect}
           onNodeClick={(event, node) => {
-            handleNodeClick(event, node); // Pass to custom handler
+            handleNodeClick(event, node);
           }}
         >
           <Controls />
@@ -175,7 +162,6 @@ const FlowEditor = () => {
           <Background variant="dots" gap={12} size={1} />
         </ReactFlow>
       </div>
-      {/* Render corresponding drawer based on block type */}
       {selectedNode && selectedNode.data.type === 'talk' && (
         <TalkDrawer
           isOpen={!!selectedNode}
@@ -208,7 +194,6 @@ const FlowEditor = () => {
           updateBlock={(updatedData) => updateNodeData(selectedNode.id, updatedData)}
         />
       )}
-      {/* Add other drawers like AiDrawer, SolanaDrawer here */}
     </div>
   );
 };
