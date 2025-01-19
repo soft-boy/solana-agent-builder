@@ -25,7 +25,7 @@ const NavBar = ({ toggleDemo }) => {
           onClick={toggleDemo}
           className="btn bg-primary text-white hover:bg-blue-700"
         >
-          Open AI Demo
+          Run
         </button>
       </div>
     </div>
