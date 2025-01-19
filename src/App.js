@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ReactFlowProvider } from '@xyflow/react';
 import NavBar from './components/NavBar';
 import LeftNavBar from './components/LeftNavBar';
 import PreviewBot from './components/PreviewBot';
@@ -29,7 +30,9 @@ const App = () => {
         {/* Flow Editor Area */}
         <main className="flex-1 relative">
           <DndProvider backend={HTML5Backend}>
-            <FlowEditor />
+            <ReactFlowProvider>
+              <FlowEditor />
+            </ReactFlowProvider>
           </DndProvider>
         </main>
 

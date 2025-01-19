@@ -6,6 +6,7 @@ import {
   Background,
   useNodesState,
   useEdgesState,
+  useReactFlow,
   addEdge,
 } from '@xyflow/react';
 import { useDrop } from 'react-dnd';
@@ -15,10 +16,13 @@ import ListenDrawer from './ListenDrawer'; // Add similar for other block types
 import '@xyflow/react/dist/style.css';
 
 const FlowEditor = () => {
+  const reactFlow = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState(null); // Track the selected node
   const editorRef = useRef(null);
+
+  window.reactFlow = reactFlow
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
