@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@supabase/supabase-js": "^2.47.16",
     "@xyflow/react": "^12.4.1",
     "cra-template": "1.2.0",
     "framer-motion": "^11.18.1",
