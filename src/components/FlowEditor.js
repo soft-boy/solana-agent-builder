@@ -15,9 +15,21 @@ import TalkDrawer from './TalkDrawer';
 import ListenDrawer from './ListenDrawer'; // Add similar for other block types
 import '@xyflow/react/dist/style.css';
 
+const startNode = {
+  id: `node-start`,
+  position: { x: 200, y: 400 },
+  data: {
+    label: 'start',
+    type: 'start', // Store the block type
+  },
+  style: { width: 200 },
+  sourcePosition: 'right',
+  targetPosition: 'left',
+}
+
 const FlowEditor = () => {
   const reactFlow = useReactFlow();
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([startNode]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState(null); // Track the selected node
   const editorRef = useRef(null);
