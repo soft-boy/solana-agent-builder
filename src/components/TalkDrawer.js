@@ -27,7 +27,7 @@ const TalkDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Edit Talk Block</h2>
-            <button className="btn btn-error btn-sm" onClick={closeDrawer}>
+            <button className="btn btn-error text-white btn-sm" onClick={closeDrawer}>
               Close
             </button>
           </div>
@@ -44,7 +44,7 @@ const TalkDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
             />
           </div>
           <div className="mt-4">
-            <button className="btn btn-primary w-full" onClick={handleSave}>
+            <button className="btn btn-primary text-white w-full" onClick={handleSave}>
               Save
             </button>
           </div>

@@ -32,7 +32,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
           transition={{ duration: 0.4, ease: 'easeInOut' }}
         >
           {/* Close Button */}
-          <button className="btn btn-error mb-4" onClick={closeDemo}>
+          <button className="btn btn-error text-white mb-4" onClick={closeDemo}>
             Close Demo
           </button>
 
@@ -49,12 +49,12 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
                   }`}
                 >
                   {msg.sender === 'bot' && (
-                    <div className="chat-bubble chat-bubble-primary">
+                    <div className="chat-bubble text-white chat-bubble-primary">
                       {msg.text}
                     </div>
                   )}
                   {msg.sender === 'user' && (
-                    <div className="chat-bubble chat-bubble-accent">
+                    <div className="chat-bubble text-white chat-bubble-accent">
                       {msg.text}
                     </div>
                   )}

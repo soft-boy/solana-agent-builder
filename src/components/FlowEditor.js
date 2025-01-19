@@ -13,6 +13,8 @@ import { useDrop } from 'react-dnd';
 import Toolbox from './Toolbox';
 import TalkDrawer from './TalkDrawer';
 import ListenDrawer from './ListenDrawer'; // Add similar for other block types
+import AiDrawer from './AiDrawer';
+import ApiDrawer from './ApiDrawer';
 import '@xyflow/react/dist/style.css';
 
 const startNode = {
@@ -125,6 +127,22 @@ const FlowEditor = () => {
       )}
       {selectedNode && selectedNode.data.type === 'listen' && (
         <ListenDrawer
+          isOpen={!!selectedNode}
+          blockData={selectedNode.data}
+          closeDrawer={() => setSelectedNode(null)}
+          updateBlock={(updatedData) => updateNodeData(selectedNode.id, updatedData)}
+        />
+      )}
+      {selectedNode && selectedNode.data.type === 'api' && (
+        <ApiDrawer
+          isOpen={!!selectedNode}
+          blockData={selectedNode.data}
+          closeDrawer={() => setSelectedNode(null)}
+          updateBlock={(updatedData) => updateNodeData(selectedNode.id, updatedData)}
+        />
+      )}
+      {selectedNode && selectedNode.data.type === 'ai' && (
+        <AiDrawer
           isOpen={!!selectedNode}
           blockData={selectedNode.data}
           closeDrawer={() => setSelectedNode(null)}

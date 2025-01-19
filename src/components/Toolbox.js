@@ -22,7 +22,7 @@ const Tool = ({ tool }) => {
   return (
     <div
       ref={drag}
-      className={`tooltip tooltip-right ${tool.tooltip ? 'tooltip-primary' : ''} flex flex-col items-center justify-center w-14 h-14 mb-3 cursor-pointer rounded-md shadow-md bg-white transition-transform transform hover:scale-105 ${
+      className={`tooltip tooltip-right ${tool.tooltip ? 'tooltip-white' : ''} flex flex-col items-center justify-center w-14 h-14 mb-3 cursor-pointer rounded-md shadow-md bg-white transition-transform transform hover:scale-105 ${
         isDragging ? 'opacity-50' : 'opacity-100'
       }`}
       data-tip={tool.tooltip}
