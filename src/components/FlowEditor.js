@@ -9,7 +9,7 @@ import {
   useReactFlow,
   addEdge,
 } from '@xyflow/react';
-import { createClient } from "@supabase/supabase-js";
+import { useSupabase } from '../lib/SupabaseContext';
 import { useDrop } from 'react-dnd';
 import Toolbox from './Toolbox';
 import TalkDrawer from './TalkDrawer';
@@ -18,14 +18,8 @@ import AiDrawer from './AiDrawer';
 import ApiDrawer from './ApiDrawer';
 import '@xyflow/react/dist/style.css';
 
-const supabase = createClient(
-  "https://hcdsvvofqpfutulgdtlj.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjZHN2dm9mcXBmdXR1bGdkdGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwNzE5ODUsImV4cCI6MjA1MjY0Nzk4NX0.6xVK2z8Y9wNKlOnW7tk1T7hJcq8xnTAwdAo9q0-pyIo"
-);
-
-window.supabase = supabase;
-
 const FlowEditor = ({ agentId }) => {
+  const supabase = useSupabase()
   const reactFlow = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);

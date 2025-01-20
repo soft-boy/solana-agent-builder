@@ -6,14 +6,10 @@ import PreviewBot from './components/PreviewBot';
 import FlowEditor from './components/FlowEditor';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  "https://hcdsvvofqpfutulgdtlj.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjZHN2dm9mcXBmdXR1bGdkdGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwNzE5ODUsImV4cCI6MjA1MjY0Nzk4NX0.6xVK2z8Y9wNKlOnW7tk1T7hJcq8xnTAwdAo9q0-pyIo"
-);
+import { useSupabase } from './lib/SupabaseContext';
 
 const App = () => {
+  const supabase = useSupabase();
   const [agents, setAgents] = useState([]);
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [showDemo, setShowDemo] = useState(false);
