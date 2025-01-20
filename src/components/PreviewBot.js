@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSupabase } from '../lib/SupabaseContext';
+import sendMessage from '../lib/sendMessage';
+import useMessages from '../hooks/useMessages';
 
 const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
 
 const PreviewBot = ({ isOpen, closeDemo }) => {
-  const [messages, setMessages] = useState([
-    { id: 1, sender: 'bot', text: 'Hello! How can I assist you today?' },
-  ]);
+  const supabase = useSupabase()
+  const { messages, loading, error } = useMessages(supabase, 1)
+  
   const [input, setInput] = useState('');
 
   const handleSend = async () => {
     if (input.trim()) {
-      setMessages([...messages, { id: Date.now(), sender: 'user', text: input }]);
+      sendMessage(supabase, 1, input, 'user')
       setInput('');
-      // Simulate bot reply
+
       const resp = await fetch(`${BASE_URL}/.netlify/functions/handle-message`)
       const data = await resp.json()
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, sender: 'bot', text: data.message },
-      ]);
+      sendMessage(supabase, 1, data.message, 'bot')
     }
   };
 
