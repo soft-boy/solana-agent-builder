@@ -14,7 +14,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
       setMessages([...messages, { id: Date.now(), sender: 'user', text: input }]);
       setInput('');
       // Simulate bot reply
-      const resp = await fetch(`${BASE_URL}/.netlify/functions/chat-eval`)
+      const resp = await fetch(`${BASE_URL}/.netlify/functions/handle-message`)
       const data = await resp.json()
       setMessages((prev) => [
         ...prev,
