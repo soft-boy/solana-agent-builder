@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const NETLIFY_BASE_URL = process.env.URL || process.env.DEPLOY_URL || 'http://localhost:8888'
+const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
 
 const PreviewBot = ({ isOpen, closeDemo }) => {
   const [messages, setMessages] = useState([
@@ -14,7 +14,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
       setMessages([...messages, { id: Date.now(), sender: 'user', text: input }]);
       setInput('');
       // Simulate bot reply
-      const resp = await fetch(`${NETLIFY_BASE_URL}/.netlify/functions/chat-eval`)
+      const resp = await fetch(`${BASE_URL}/.netlify/functions/chat-eval`)
       const data = await resp.json()
       setMessages((prev) => [
         ...prev,
