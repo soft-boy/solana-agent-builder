@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ReactFlowProvider } from '@xyflow/react';
 import NavBar from './components/NavBar';
 import LeftNavBar from './components/LeftNavBar';
 import PreviewBot from './components/PreviewBot';
 import FlowEditor from './components/FlowEditor';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
 import { useSupabase } from './lib/SupabaseContext';
 
 const App = () => {
@@ -82,17 +79,13 @@ const App = () => {
           />
         </aside>
         <main className="flex-1 relative">
-          <DndProvider backend={HTML5Backend}>
-            <ReactFlowProvider>
-              {selectedAgent ? (
-                <FlowEditor agentId={selectedAgent} />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-500">
-                  Select an agent to start editing.
-                </div>
-              )}
-            </ReactFlowProvider>
-          </DndProvider>
+          {selectedAgent ? (
+            <FlowEditor agentId={selectedAgent} />
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">
+              Select an agent to start editing.
+            </div>
+          )}
         </main>
         <PreviewBot isOpen={showDemo} closeDemo={closeDemo} />
       </div>
