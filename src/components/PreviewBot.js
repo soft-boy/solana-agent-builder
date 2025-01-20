@@ -17,9 +17,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
       sendMessage(supabase, 1, input, 'user')
       setInput('');
 
-      const resp = await fetch(`${BASE_URL}/.netlify/functions/handle-message`)
-      const data = await resp.json()
-      sendMessage(supabase, 1, data.message, 'bot')
+      await fetch(`${BASE_URL}/.netlify/functions/handle-message`)
     }
   };
 
