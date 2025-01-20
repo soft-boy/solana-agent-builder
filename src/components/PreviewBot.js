@@ -15,9 +15,18 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
   const handleSend = async () => {
     if (input.trim()) {
       sendMessage(supabase, 1, input, 'user')
-      setInput('');
+      fetch(`${BASE_URL}/.netlify/functions/trigger-convo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'userMessage', 
+          message: input,
+        }),
+      });
 
-      await fetch(`${BASE_URL}/.netlify/functions/trigger-convo`)
+      setInput('');
     }
   };
 

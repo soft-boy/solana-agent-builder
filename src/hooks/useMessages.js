@@ -45,7 +45,10 @@ const useMessages = (supabase, conversationId) => {
           },
           (payload) => {
             console.log('payload:', payload)
-            setMessages((prev) => [...prev, payload.new])
+            setMessages((prev) => {
+              const updatedMessages = [...prev, payload.new];
+              return updatedMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            });
           }
         )
         .subscribe((status) => {

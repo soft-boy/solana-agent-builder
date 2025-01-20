@@ -1,6 +1,21 @@
 import React from 'react';
 
+const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
+
 const NavBar = ({ toggleDemo }) => {
+  const handleRun = () => {
+    fetch(`${BASE_URL}/.netlify/functions/trigger-convo`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'start', 
+        data: null
+      }),
+    });
+  }
+
   return (
     <div className="navbar bg-neutral shadow-lg">
       <div className="navbar-start">
@@ -15,7 +30,7 @@ const NavBar = ({ toggleDemo }) => {
 
       <div className="navbar-end">
         <button
-          onClick={toggleDemo}
+          onClick={() => { handleRun(); toggleDemo() }}
           className="btn bg-primary text-white hover:bg-blue-700"
         >
           Run
