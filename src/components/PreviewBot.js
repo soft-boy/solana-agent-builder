@@ -31,10 +31,17 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
           exit={{ x: '100%' }}
           transition={{ duration: 0.4, ease: 'easeInOut' }}
         >
-          {/* Close Button */}
-          <button className="btn btn-error text-white mb-4" onClick={closeDemo}>
-            Close Demo
-          </button>
+          <div className="flex gap-2">
+            {/* Close Button */}
+            <button className="btn btn-error text-white mb-4" onClick={closeDemo}>
+              Close Demo
+            </button>
+
+            {/* Close Button */}
+            <button className="btn mb-4" onClick={closeDemo}>
+              Restart
+            </button>
+          </div>
 
           <h2 className="text-xl font-bold mb-4">AI Demo Conversation</h2>
 
