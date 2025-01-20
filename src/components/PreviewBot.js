@@ -17,7 +17,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
       sendMessage(supabase, 1, input, 'user')
       setInput('');
 
-      await fetch(`${BASE_URL}/.netlify/functions/handle-message`)
+      await fetch(`${BASE_URL}/.netlify/functions/trigger-convo`)
     }
   };
 

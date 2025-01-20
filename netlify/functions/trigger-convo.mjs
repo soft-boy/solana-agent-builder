@@ -19,12 +19,14 @@ const insertMessage = async (conversation_id, sender, text) => {
   return { data, error }
 }
 
-const handleMessage = async (req, context) => {
-  insertMessage(1, 'bot', 'hello')
+const triggerConvo = async (req, context) => {
+  const { type, data } = JSON.parse(req.body);
+
+  // insertMessage(1, 'bot', 'hello')
 
   return new Response(JSON.stringify({ success: true }), {
     headers: { "Content-Type": "application/json" },
   });
 };
 
-export default handleMessage;
+export default triggerConvo;
