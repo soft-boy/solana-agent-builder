@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const NETLIFY_BASE_URL = process.env.DEPLOY_URL || 'http://localhost:8888'
+const NETLIFY_BASE_URL = process.env.URL || process.env.DEPLOY_URL || 'http://localhost:8888'
 
 const PreviewBot = ({ isOpen, closeDemo }) => {
   const [messages, setMessages] = useState([
