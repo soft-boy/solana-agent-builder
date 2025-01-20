@@ -15,7 +15,7 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npx netlify dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "daisyui": "^4.12.23",
+    "netlify-cli": "^18.0.1",
     "tailwindcss": "^3.4.17"
   }
 }

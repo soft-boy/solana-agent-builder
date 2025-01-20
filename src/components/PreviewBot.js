@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const NETLIFY_BASE_URL = process.env.DEPLOY_URL || 'http://localhost:8888'
+
 const PreviewBot = ({ isOpen, closeDemo }) => {
   const [messages, setMessages] = useState([
     { id: 1, sender: 'bot', text: 'Hello! How can I assist you today?' },
   ]);
   const [input, setInput] = useState('');
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (input.trim()) {
       setMessages([...messages, { id: Date.now(), sender: 'user', text: input }]);
       setInput('');
       // Simulate bot reply
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          { id: Date.now() + 1, sender: 'bot', text: 'This is a simulated response!' },
-        ]);
-      }, 1000);
+      const resp = await fetch(`${NETLIFY_BASE_URL}/.netlify/functions/chat-eval`)
+      const data = await resp.json()
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now() + 1, sender: 'bot', text: data.message },
+      ]);
     }
   };
 
