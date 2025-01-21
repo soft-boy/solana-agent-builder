@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import createMessage from "./createMessage";
-import updateConvoNode from './updateConvoNode';
+import createMessage from "./supabase/createMessage";
+import updateConvoNode from './supabase/updateConvoNode';
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -12,7 +12,7 @@ const runNode = (node) => {
 
   switch (node.type) {
     case 'start':
-      // console.log('Running "start" node:', node);
+      console.log('Running "start" node:', node);
       return;
 
     case 'talk':

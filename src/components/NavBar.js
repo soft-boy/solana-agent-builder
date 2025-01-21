@@ -11,7 +11,7 @@ const NavBar = ({ toggleDemo }) => {
       },
       body: JSON.stringify({
         type: 'start', 
-        data: null
+        data: { flowchartId: 1 } // TODO generalize
       }),
     });
   }
