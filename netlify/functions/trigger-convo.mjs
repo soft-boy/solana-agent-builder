@@ -29,8 +29,9 @@ const triggerConvo = async (req, context) => {
     );
   }
 
-  return new Response(JSON.stringify({ success: true }), {
-    headers: { "Content-Type": "application/json" },
+  return new Response(
+    JSON.stringify({ success: true }),
+    { status: 200, headers: { "Content-Type": "application/json" },
   });
 }
 
