@@ -1,19 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaHome, FaFolder, FaCog, FaPlus, FaTrash } from 'react-icons/fa';
+import { useSupabase } from '../lib/SupabaseContext';
+import {
+  createFlowchart,
+  getFlowcharts,
+  deleteFlowchart
+} from '../lib/flowcharts';
+import { Link, useNavigate, useParams } from 'react-router';
 
-const LeftNavBar = ({
-  agents = [],
-  onAddAgent,
-  onSelectAgent,
-  onDeleteAgent,
-}) => {
+const LeftNavBar = () => {
+  const navigate = useNavigate()
+  const { agentId: selectedAgentId } = useParams()
+  const supabase = useSupabase();
+  const [agents, setAgents] = useState([]);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newAgentName, setNewAgentName] = useState('');
-  const [selectedAgentId, setSelectedAgentId] = useState(null);
 
   // Delete confirmation modal
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      const agents = await getFlowcharts(supabase)
+      setAgents(agents);
+    };
+    
+    fetchAgents()
+  }, [supabase])
+
+  // Add Agent
+  const onAddAgent = async (name) => {
+    const { data } = await createFlowchart(supabase, name)
+    setAgents((prevAgents) => [...prevAgents, ...data]);
+  };
+
+  const onDeleteAgent = async (agentId) => {
+    await deleteFlowchart(supabase, agentId)
+    setAgents((prevAgents) => prevAgents.filter((a) => a.id !== agentId));
+  };
 
   // -- Add agent
   const handleAddAgent = () => {
@@ -21,12 +46,6 @@ const LeftNavBar = ({
     onAddAgent(newAgentName);
     setNewAgentName('');
     setAddModalOpen(false);
-  };
-
-  // -- Select agent
-  const handleSelectAgent = (agentId) => {
-    setSelectedAgentId(agentId);
-    onSelectAgent(agentId);
   };
 
   // -- Delete agent (open modal)
@@ -57,10 +76,10 @@ const LeftNavBar = ({
       <ul className="space-y-4 p-4">
         {/* Home */}
         <li>
-          <a className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
+          <Link to="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
             <FaHome className="text-lg" />
             <span className="font-medium">Home</span>
-          </a>
+          </Link>
         </li>
 
         {/* Agents Collapse */}
@@ -75,12 +94,12 @@ const LeftNavBar = ({
           <div className="collapse-content p-0 pb-3 w-full">
             <div className="flex flex-col grow space-y-2 mt-2 w-full">
               {agents.map((agent) => {
-                const isSelected = agent.id === selectedAgentId;
+                const isSelected = `${agent.id}` === selectedAgentId;
                 return (
                   // Full-width row
                   <div
                     key={agent.id}
-                    onClick={() => handleSelectAgent(agent.id)}
+                    onClick={() => navigate(`/agent/${agent.id}`)}
                     className={`
                       w-full min-w-full
                       flex items-center
@@ -128,10 +147,10 @@ const LeftNavBar = ({
 
         {/* Settings */}
         <li>
-          <a className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
+          <Link to="/settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
             <FaCog className="text-lg" />
             <span className="font-medium">Settings</span>
-          </a>
+          </Link>
         </li>
       </ul>
 

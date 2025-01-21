@@ -5,6 +5,7 @@ import { SupabaseProvider } from './lib/SupabaseContext';
 import { ReactFlowProvider } from '@xyflow/react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
+import { BrowserRouter } from "react-router";
 import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -13,7 +14,9 @@ root.render(
     <SupabaseProvider>
       <DndProvider backend={HTML5Backend}>
         <ReactFlowProvider>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ReactFlowProvider>
       </DndProvider>
     </SupabaseProvider>

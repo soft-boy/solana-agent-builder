@@ -16,9 +16,11 @@ import TalkDrawer from './TalkDrawer';
 import ListenDrawer from './ListenDrawer';
 import AiDrawer from './AiDrawer';
 import ApiDrawer from './ApiDrawer';
+import { useParams } from 'react-router';
 import '@xyflow/react/dist/style.css';
 
-const FlowEditor = ({ agentId }) => {
+const FlowEditor = () => {
+  const { agentId } = useParams()
   const supabase = useSupabase()
   const reactFlow = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
