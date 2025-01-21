@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ListenDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
-  const [listeningDuration, setListeningDuration] = useState('');
+  const [listenVariable, setListenVariable] = useState('');
 
   useEffect(() => {
     if (blockData) {
-      setListeningDuration(blockData.listeningDuration || '');
+      setListenVariable(blockData.listenVariable || '');
     }
   }, [blockData]);
 
   const handleSave = () => {
-    updateBlock({ listeningDuration }); // Save changes to the block
+    updateBlock({ listenVariable }); // Save changes to the block
     closeDrawer();
   };
 
@@ -33,14 +33,14 @@ const ListenDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
           </div>
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Listening Duration (seconds)</span>
+              <span className="label-text">Save reply to:</span>
             </label>
             <input
-              type="number"
-              placeholder="Enter duration"
+              type="text"
+              placeholder="variable name"
               className="input input-bordered"
-              value={listeningDuration}
-              onChange={(e) => setListeningDuration(e.target.value)}
+              value={listenVariable}
+              onChange={(e) => setListenVariable(e.target.value)}
             />
           </div>
           <div className="mt-4">
