@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaHome, FaFolder, FaCog, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaHome, FaFolder, FaCog, FaPlus, FaTrash, FaRegCommentAlt } from 'react-icons/fa';
 import { useSupabase } from '../lib/SupabaseContext';
 import {
   createFlowchart,
@@ -143,6 +143,14 @@ const LeftNavBar = () => {
               </button>
             </div>
           </div>
+        </li>
+
+        {/* Converstaions */}
+        <li>
+          <Link to="/messages" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
+            <FaRegCommentAlt className="text-lg" />
+            <span className="font-medium">Messages</span>
+          </Link>
         </li>
 
         {/* Settings */}

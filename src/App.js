@@ -5,6 +5,7 @@ import LeftNavBar from './components/LeftNavBar';
 import PreviewBot from './components/PreviewBot';
 import FlowEditor from './components/FlowEditor';
 import HomeView from './components/HomeView';
+import MessagesView from './components/MessagesView';
 import SettingsView from './components/SettingsView';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<HomeView />} />
         <Route path="/agent/:agentId" element={<FlowEditor />} />
+        <Route path="/messages" element={<MessagesView />} />
         <Route path="/settings" element={<SettingsView />} />
       </Route>
     </Routes>
