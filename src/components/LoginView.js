@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
+import { FaGoogle } from "react-icons/fa";
 
 const SUPABASE_URL = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjZHN2dm9mcXBmdXR1bGdkdGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwNzE5ODUsImV4cCI6MjA1MjY0Nzk4NX0.6xVK2z8Y9wNKlOnW7tk1T7hJcq8xnTAwdAo9q0-pyIo";
@@ -50,22 +51,25 @@ const LoginView = () => {
         <button onClick={handleLogin} className="btn text-white btn-primary w-full mb-4">
           Login
         </button>
-        <button onClick={handleGoogleLogin} className="btn btn-outline w-full">
+        <button
+          onClick={handleGoogleLogin}
+          className="btn btn-outline w-full flex items-center justify-center"
+        >
+          <FaGoogle className="mr-2" />
           Login with Google
         </button>
         <div className="mt-6 text-center">
-        <p className="mt-4 text-sm">
-          Don't have an account? {""}
-          <button
-            onClick={() => navigate("/register")}
-            className="text-indigo-600 hover:underline"
-          >
-            Register here
-          </button>
-        </p>
+          <p className="mt-4 text-sm">
+            Don't have an account? {""}
+            <button
+              onClick={() => navigate("/register")}
+              className="text-indigo-600 hover:underline"
+            >
+              Register here
+            </button>
+          </p>
         </div>
       </div>
-      
     </div>
   );
 };
