@@ -5,10 +5,9 @@ import updateConvoNode from './supabase/updateConvoNode';
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
-const conversation_id = 1
 
-const runNode = (node) => {
-  updateConvoNode(supabase, conversation_id, node.id);
+const runNode = (node, context) => {
+  updateConvoNode(supabase, context.convo.id, node.id);
 
   switch (node.type) {
     case 'start':
@@ -17,7 +16,7 @@ const runNode = (node) => {
 
     case 'talk':
       console.log('Running "talk" node:', node);
-      return createMessage(supabase, conversation_id, 'bot', node.data.message);
+      return createMessage(supabase, context.convo.id, 'bot', node.data.message);
 
     case 'listen':
       console.log('Running "listen" node:', node);
