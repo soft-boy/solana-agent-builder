@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import createSBConvo from '../lib/supabase/SB';
+import createSBConvo from '../lib/supabase/createConvo';
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;

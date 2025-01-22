@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Outlet } from "react-router";
+import SwaggerUI from "swagger-ui-react"
 import NavBar from './components/NavBar';
 import LeftNavBar from './components/LeftNavBar';
 import PreviewBot from './components/PreviewBot';
@@ -7,6 +8,8 @@ import FlowEditor from './components/FlowEditor';
 import HomeView from './components/HomeView';
 import MessagesView from './components/MessagesView';
 import SettingsView from './components/SettingsView';
+
+const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
 
 const App = () => {
   return (
@@ -17,6 +20,7 @@ const App = () => {
         <Route path="/messages" element={<MessagesView />} />
         <Route path="/settings" element={<SettingsView />} />
       </Route>
+      <Route path="/docs" element={<SwaggerUI url={`${BASE_URL}/.netlify/functions/message-convo`} />} />
     </Routes>
   );
 };
