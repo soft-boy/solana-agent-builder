@@ -10,7 +10,7 @@ const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const triggerConvo = async (req, context) => {
+const messageConvo = async (req, context) => {
   const bodyText = await req.text()
   const body = JSON.parse(bodyText);
   const { type: requestType, data: requestData } = body;
@@ -20,7 +20,7 @@ const triggerConvo = async (req, context) => {
   flowchart = preprocess(flowchart.data)
 
   try {
-    runFlowchart(flowchart, currentNodeId)
+    runFlowchart(flowchart, currentNodeId, { convo })
   }
   catch {
     return new Response(
@@ -60,14 +60,14 @@ const getConvoAndCurrentNode = async (requestType, requestData) => {
 }
 
 const MAX_ITERS = 1000;
-const runFlowchart = async (flowchart, currentNodeId) => {
+const runFlowchart = async (flowchart, currentNodeId, context) => {
   let iters = 0
   let currentNode = flowchart[currentNodeId]
   while (currentNode && iters < MAX_ITERS) {
-    runNode(currentNode)
+    runNode(currentNode, context)
     currentNode = getNextNode(currentNode, flowchart)
     iters++;
   }
 };
 
-export default triggerConvo;
+export default messageConvo;

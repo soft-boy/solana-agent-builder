@@ -9,7 +9,7 @@ const NavBar = ({ toggleDemo }) => {
 
   const handleRun = () => {
     console.log(agentId)
-    fetch(`${BASE_URL}/.netlify/functions/trigger-convo`, {
+    fetch(`${BASE_URL}/.netlify/functions/message-convo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
