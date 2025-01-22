@@ -9,8 +9,8 @@ import {
 import { Link, useNavigate, useParams } from 'react-router';
 
 const LeftNavBar = () => {
-  const navigate = useNavigate()
-  const { agentId: selectedAgentId } = useParams()
+  const navigate = useNavigate();
+  const { agentId: selectedAgentId } = useParams();
   const supabase = useSupabase();
   const [agents, setAgents] = useState([]);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
@@ -20,23 +20,38 @@ const LeftNavBar = () => {
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
 
+  const [user, setUser] = useState(null);
+
   useEffect(() => {
     const fetchAgents = async () => {
-      const agents = await getFlowcharts(supabase)
+      const agents = await getFlowcharts(supabase);
       setAgents(agents);
     };
-    
-    fetchAgents()
-  }, [supabase])
+
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    fetchAgents();
+    fetchUser();
+  }, [supabase]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
 
   // Add Agent
   const onAddAgent = async (name) => {
-    const { data } = await createFlowchart(supabase, name)
+    const { data } = await createFlowchart(supabase, name);
     setAgents((prevAgents) => [...prevAgents, ...data]);
   };
 
   const onDeleteAgent = async (agentId) => {
-    await deleteFlowchart(supabase, agentId)
+    await deleteFlowchart(supabase, agentId);
     setAgents((prevAgents) => prevAgents.filter((a) => a.id !== agentId));
   };
 
@@ -69,10 +84,8 @@ const LeftNavBar = () => {
   };
 
   return (
-    <div
-      className="w-64 h-full bg-neutral text-white shadow-lg"
-      style={{ overflowY: 'auto' }}
-    >
+    <div className="w-64 h-full bg-neutral text-white shadow-lg flex flex-col justify-between">
+      {/* Sidebar Menu */}
       <ul className="space-y-4 p-4">
         {/* Home */}
         <li>
@@ -90,36 +103,21 @@ const LeftNavBar = () => {
             <span>Agents</span>
           </div>
 
-          {/* Make sure we remove side padding so rows span full width */}
           <div className="collapse-content p-0 pb-3 w-full">
             <div className="flex flex-col grow space-y-2 mt-2 w-full">
               {agents.map((agent) => {
                 const isSelected = `${agent.id}` === selectedAgentId;
                 return (
-                  // Full-width row
                   <div
                     key={agent.id}
                     onClick={() => navigate(`/agent/${agent.id}`)}
-                    className={`
-                      w-full min-w-full
-                      flex items-center
-                      px-3 py-2
-                      rounded-md
-                      cursor-pointer
-                      transition
-                      ${
-                        isSelected
-                          ? 'bg-primary text-white'
-                          : 'bg-gray-800 text-white hover:bg-gray-600'
-                      }
-                    `}
+                    className={`w-full min-w-full flex items-center px-3 py-2 rounded-md cursor-pointer transition ${
+                      isSelected ? 'bg-primary text-white' : 'bg-gray-800 text-white hover:bg-gray-600'
+                    }`}
                   >
-                    {/* Truncated agent name */}
                     <span className="flex-1 mr-2 text-sm font-semibold truncate">
                       {agent.name}
                     </span>
-
-                    {/* Delete icon (stopPropagation so row-click doesn’t fire) */}
                     <button
                       className="p-1 rounded-md text-red-400 hover:text-red-500 hover:bg-gray-700"
                       onClick={(e) => {
@@ -145,7 +143,7 @@ const LeftNavBar = () => {
           </div>
         </li>
 
-        {/* Converstaions */}
+        {/* Messages */}
         <li>
           <Link to="/messages" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
             <FaRegCommentAlt className="text-lg" />
@@ -162,74 +160,29 @@ const LeftNavBar = () => {
         </li>
       </ul>
 
-      {/* Add Agent Modal */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-2xl">
-            <h3 className="text-xl font-bold mb-4 text-black">Create New Agent</h3>
-            <div className="form-control mb-4">
-              <label className="label">
-                <span className="label-text text-gray-800">Agent Name</span>
-              </label>
-              <input
-                type="text"
-                className="input input-bordered text-black"
-                placeholder="Enter agent name"
-                value={newAgentName}
-                onChange={(e) => setNewAgentName(e.target.value)}
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <button
-                className="btn btn-outline"
-                onClick={() => setAddModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary text-white"
-                onClick={handleAddAgent}
-              >
-                Create
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {agentToDelete && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-2xl">
-            <h3 className="text-xl font-bold mb-4 text-black">Delete Agent</h3>
-            <p className="text-black mb-2">
-              Are you sure you want to delete <strong>{agentToDelete.name}</strong>?
-            </p>
-            <p className="text-black mb-4">
-              Type the agent’s name to confirm:
-            </p>
-            <input
-              type="text"
-              className="input input-bordered w-full text-black mb-4"
-              placeholder={`Type "${agentToDelete.name}" to confirm`}
-              value={confirmName}
-              onChange={(e) => setConfirmName(e.target.value)}
+      {/* User Badge */}
+      <div className="p-4 border-t border-gray-700">
+        {user ? (
+          <div className="flex items-center space-x-3">
+            <img
+              src={`https://ui-avatars.com/api/?name=${user.email}&background=random`}
+              alt="User Avatar"
+              className="w-10 h-10 rounded-full"
             />
-            <div className="flex justify-end space-x-2">
-              <button className="btn btn-outline" onClick={handleCancelDelete}>
-                Cancel
-              </button>
+            <div className="flex-1">
+            <p className="text-sm font-medium">{user.email.split('@')[0]}</p>
               <button
-                className="btn btn-error text-white"
-                disabled={confirmName !== agentToDelete.name}
-                onClick={handleConfirmDelete}
+                onClick={handleLogout}
+                className="btn btn-error btn-xs text-white mt-2"
               >
-                Delete
+                Logout
               </button>
             </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm italic text-gray-400">Not logged in</p>
+        )}
+      </div>
     </div>
   );
 };
