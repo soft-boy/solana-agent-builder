@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FaHome, FaFolder, FaCog, FaPlus, FaTrash, FaRegCommentAlt } from 'react-icons/fa';
+import {
+  FaHome,
+  FaFolder,
+  FaCog,
+  FaPlus,
+  FaTrash,
+  FaRegCommentAlt
+} from 'react-icons/fa';
+import { IoLogOutOutline } from "react-icons/io5"; // <-- newly imported icon
 import { useSupabase } from '../lib/SupabaseContext';
 import {
   createFlowchart,
@@ -12,6 +20,7 @@ const LeftNavBar = () => {
   const navigate = useNavigate();
   const { agentId: selectedAgentId } = useParams();
   const supabase = useSupabase();
+
   const [agents, setAgents] = useState([]);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newAgentName, setNewAgentName] = useState('');
@@ -20,17 +29,18 @@ const LeftNavBar = () => {
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
 
+  // Auth user
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchAgents = async () => {
-      const agents = await getFlowcharts(supabase);
-      setAgents(agents);
+      const fetchedAgents = await getFlowcharts(supabase);
+      setAgents(fetchedAgents);
     };
 
     const fetchUser = async () => {
       const {
-        data: { user },
+        data: { user }
       } = await supabase.auth.getUser();
       setUser(user);
     };
@@ -44,32 +54,32 @@ const LeftNavBar = () => {
     navigate('/login');
   };
 
-  // Add Agent
+  // Create a new agent
   const onAddAgent = async (name) => {
     const { data } = await createFlowchart(supabase, name);
     setAgents((prevAgents) => [...prevAgents, ...data]);
   };
 
+  // Delete an agent
   const onDeleteAgent = async (agentId) => {
     await deleteFlowchart(supabase, agentId);
     setAgents((prevAgents) => prevAgents.filter((a) => a.id !== agentId));
   };
 
-  // -- Add agent
+  // Handle adding
   const handleAddAgent = () => {
-    if (newAgentName.trim() === '') return;
-    onAddAgent(newAgentName);
+    if (!newAgentName.trim()) return;
+    onAddAgent(newAgentName.trim());
     setNewAgentName('');
     setAddModalOpen(false);
   };
 
-  // -- Delete agent (open modal)
+  // Handle delete triggers
   const handleDeleteClick = (agent) => {
     setAgentToDelete(agent);
     setConfirmName('');
   };
 
-  // -- Confirm actual delete
   const handleConfirmDelete = () => {
     if (!agentToDelete) return;
     onDeleteAgent(agentToDelete.id);
@@ -77,7 +87,6 @@ const LeftNavBar = () => {
     setConfirmName('');
   };
 
-  // -- Cancel delete
   const handleCancelDelete = () => {
     setAgentToDelete(null);
     setConfirmName('');
@@ -89,7 +98,10 @@ const LeftNavBar = () => {
       <ul className="space-y-4 p-4">
         {/* Home */}
         <li>
-          <Link to="/" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
+          <Link
+            to="/"
+            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
+          >
             <FaHome className="text-lg" />
             <span className="font-medium">Home</span>
           </Link>
@@ -112,7 +124,9 @@ const LeftNavBar = () => {
                     key={agent.id}
                     onClick={() => navigate(`/agent/${agent.id}`)}
                     className={`w-full min-w-full flex items-center px-3 py-2 rounded-md cursor-pointer transition ${
-                      isSelected ? 'bg-primary text-white' : 'bg-gray-800 text-white hover:bg-gray-600'
+                      isSelected
+                        ? 'bg-primary text-white'
+                        : 'bg-gray-800 text-white hover:bg-gray-600'
                     }`}
                   >
                     <span className="flex-1 mr-2 text-sm font-semibold truncate">
@@ -145,7 +159,10 @@ const LeftNavBar = () => {
 
         {/* Messages */}
         <li>
-          <Link to="/messages" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
+          <Link
+            to="/messages"
+            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
+          >
             <FaRegCommentAlt className="text-lg" />
             <span className="font-medium">Messages</span>
           </Link>
@@ -153,7 +170,10 @@ const LeftNavBar = () => {
 
         {/* Settings */}
         <li>
-          <Link to="/settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition">
+          <Link
+            to="/settings"
+            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
+          >
             <FaCog className="text-lg" />
             <span className="font-medium">Settings</span>
           </Link>
@@ -163,21 +183,27 @@ const LeftNavBar = () => {
       {/* User Badge */}
       <div className="p-4 border-t border-gray-700">
         {user ? (
-          <div className="flex items-center space-x-3">
-            <img
-              src={`https://ui-avatars.com/api/?name=${user.email}&background=random`}
-              alt="User Avatar"
-              className="w-10 h-10 rounded-full"
-            />
-            <div className="flex-1">
-            <p className="text-sm font-medium">{user.email.split('@')[0]}</p>
-              <button
-                onClick={handleLogout}
-                className="btn btn-error btn-xs text-white mt-2"
-              >
-                Logout
-              </button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <img
+                src={`https://ui-avatars.com/api/?name=${user.email}&background=random`}
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full"
+              />
+              <div>
+                <p className="text-sm font-medium">
+                  {user.email.split('@')[0]}
+                </p>
+              </div>
             </div>
+
+            {/* Red Logout Icon on the right */}
+            <button
+              onClick={handleLogout}
+              className="p-2 text-red-500 hover:text-red-600 transition"
+            >
+              <IoLogOutOutline size={22} />
+            </button>
           </div>
         ) : (
           <p className="text-sm italic text-gray-400">Not logged in</p>
