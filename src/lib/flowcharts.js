@@ -1,6 +1,6 @@
 export const createFlowchart = async (supabase, name) => {
   const { data, error } = await supabase
-    .from('flowcharts')
+    .from('agents')
     .insert([{
       name,
       data: null,
@@ -12,7 +12,7 @@ export const createFlowchart = async (supabase, name) => {
 
 export const getFlowcharts = async (supabase) => {
   const { data: agents } = await supabase
-    .from('flowcharts')
+    .from('agents')
     .select('*');
   
   return agents;
@@ -20,7 +20,7 @@ export const getFlowcharts = async (supabase) => {
 
 export const deleteFlowchart = async (supabase, agentId) => {
   const { error } = await supabase
-    .from('flowcharts')
+    .from('agents')
     .delete()
     .eq('id', agentId);
 

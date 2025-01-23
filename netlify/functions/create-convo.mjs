@@ -1,16 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 import createSBConvo from '../lib/supabase/createConvo';
+import runFlowchart from '../lib/runFlowchart';
+import preprocess from '../lib/preprocessFlowchart';
+import getFlowchart from '../lib/supabase/getFlowchart';
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const startNodeId = 'node-start'
+
 const createConvo = async (req, context) => {
   const bodyText = await req.text()
   const body = JSON.parse(bodyText);
-  const { userId, agentId } = body;
+  const { participantId, agentId } = body;
 
-  const { convo, error } = await createSBConvo(supabase, userId, agentId)
+  const { convo, error } = await createSBConvo(supabase, participantId, agentId)
+  let { data: agent } = await getFlowchart(supabase, agentId)
+  const flowchart = preprocess(agent.flowchart)
+  runFlowchart(flowchart, startNodeId, { convo })
 
   return new Response(
     JSON.stringify({ convo, error }),

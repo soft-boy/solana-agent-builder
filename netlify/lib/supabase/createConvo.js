@@ -1,16 +1,16 @@
-const createConvo = async (supabase, user_id, flowchart) => {
-  const { data: convo, error } = await supabase
+const createConvo = async (supabase, participant_id, agent_id) => {
+  const { data, error } = await supabase
     .from('conversations')
     .insert([{
-      user_id,
+      participant_id,
       is_open: true,
       variable_context: {},
-      flowchart,
+      agent_id,
       current_node: 'node-start'
     }])
     .select();
 
-  return { convo, error }
+  return { convo: data[0], error }
 }
 
 export default createConvo;

@@ -21,7 +21,7 @@ import '@xyflow/react/dist/style.css';
 
 const FlowEditor = () => {
   const { agentId } = useParams();
-  const supabase = useSupabase();
+  const { supabase } = useSupabase();
   const reactFlow = useReactFlow();
 
   // Node + Edge state
@@ -51,15 +51,15 @@ const FlowEditor = () => {
   // Fetch existing flowchart from supabase
   useEffect(() => {
     const fetchFlowchart = async () => {
-      const { data } = await supabase
-        .from('flowcharts')
-        .select('data')
+      const { data: agent } = await supabase
+        .from('agents')
+        .select('*')
         .eq('id', agentId)
         .single();
 
-      if (data?.data) {
-        setNodes(data.data.nodes || []);
-        setEdges(data.data.edges || []);
+      if (agent?.flowchart) {
+        setNodes(agent.flowchart.nodes || []);
+        setEdges(agent.flowchart.edges || []);
       } else {
         setNodes([]);
         setEdges([]);
@@ -79,10 +79,10 @@ const FlowEditor = () => {
     };
 
     const { error } = await supabase
-      .from('flowcharts')
+      .from('agents')
       .upsert({
         id: agentId,
-        data: flowchartData,
+        flowchart: flowchartData,
       });
 
     if (error) {

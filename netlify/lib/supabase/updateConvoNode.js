@@ -16,7 +16,7 @@ const updateConvoNode = async (supabase, conversationId, currentNode) => {
       return { error: error.message };
     }
 
-    console.log('Conversation node updated successfully:', data);
+    console.log('Conversation node updated successfully:', conversationId);
     return data;
   } catch (err) {
     console.error('Unexpected error:', err);

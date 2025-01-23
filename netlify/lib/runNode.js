@@ -7,6 +7,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const runNode = (node, context) => {
+  console.log(context.convo, node.id)
   updateConvoNode(supabase, context.convo.id, node.id);
 
   switch (node.type) {

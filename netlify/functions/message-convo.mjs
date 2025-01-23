@@ -1,10 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import createConvo from '../lib/supabase/createConvo';
 import getConvo from '../lib/supabase/getConvo';
-import getNextNode from '../lib/getNextNode';
-import runNode from '../lib/runNode';
 import preprocess from '../lib/preprocessFlowchart';
 import getFlowchart from '../lib/supabase/getFlowchart';
+import runFlowchart from '../lib/runFlowchart';
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -58,16 +57,5 @@ const getConvoAndCurrentNode = async (requestType, requestData) => {
 
   return { convo, currentNodeId }
 }
-
-const MAX_ITERS = 1000;
-const runFlowchart = async (flowchart, currentNodeId, context) => {
-  let iters = 0
-  let currentNode = flowchart[currentNodeId]
-  while (currentNode && iters < MAX_ITERS) {
-    runNode(currentNode, context)
-    currentNode = getNextNode(currentNode, flowchart)
-    iters++;
-  }
-};
 
 export default messageConvo;

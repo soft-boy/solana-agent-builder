@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSupabase } from '../lib/SupabaseContext';
 import sendMessage from '../lib/sendMessage';
 import useMessages from '../hooks/useMessages';
+import { AppContext } from '../lib/AppContext';
+import { useParams } from 'react-router';
 
 const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
 
 const PreviewBot = ({ isOpen, closeDemo }) => {
-  const supabase = useSupabase()
-  const { messages, loading, error } = useMessages(supabase, 1)
-  
+  const { agentId } = useParams()
+  const { supabase, userId } = useSupabase()
+  const { currentConvoId, setCurrentConvoId } = useContext(AppContext);
+  const { messages, loading, error } = useMessages(supabase, currentConvoId)
   const [input, setInput] = useState('');
+
+  const restart = async () => {
+    const response = await fetch(`${BASE_URL}/.netlify/functions/create-convo`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        agentId,
+        participantId: userId
+      }),
+    });
+    const { convo } = await response.json()
+    setCurrentConvoId(convo.id)
+  }
 
   const handleSend = async () => {
     if (input.trim()) {
@@ -47,12 +65,12 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
             </button>
 
             {/* Close Button */}
-            <button className="btn mb-4" onClick={closeDemo}>
+            <button className="btn mb-4" onClick={restart}>
               Restart
             </button>
           </div>
 
-          <h2 className="text-xl font-bold mb-4">AI Demo Conversation</h2>
+          <h2 className="text-xl font-bold mb-4">AI Demo Conversation {currentConvoId}</h2>
 
           {/* Chat Window */}
           <div className="flex flex-col h-[calc(100%-96px)]">

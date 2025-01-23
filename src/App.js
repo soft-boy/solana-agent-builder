@@ -11,36 +11,10 @@ import SettingsView from "./components/SettingsView";
 import LoginView from "./components/LoginView";
 import RegisterView from "./components/RegisterView";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-// Initialize Supabase client
-const SUPABASE_URL = "https://hcdsvvofqpfutulgdtlj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjZHN2dm9mcXBmdXR1bGdkdGxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwNzE5ODUsImV4cCI6MjA1MjY0Nzk4NX0.6xVK2z8Y9wNKlOnW7tk1T7hJcq8xnTAwdAo9q0-pyIo";
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+import { useSupabase } from "./lib/SupabaseContext";
 
 export const App = () => {
-  const [session, setSession] = useState(null);
-  const [loading, setLoading] = useState(true); // Add a loading state
-
-  useEffect(() => {
-    // Fetch session on initial load
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setLoading(false); // Stop loading after fetching session
-    };
-
-    getSession();
-
-    // Listen to auth state changes
-    const { data: subscription } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session); // Update session on login/logout
-    });
-
-    // Cleanup the subscription
-    return () => {
-      subscription?.unsubscribe?.();
-    };
-  }, []);
+  const { session, loading } = useSupabase()
 
   if (loading) {
     return (

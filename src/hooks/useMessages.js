@@ -43,12 +43,8 @@ const useMessages = (supabase, conversationId) => {
             table: 'messages',
             filter: `conversation_id=eq.${conversationId}`,
           },
-          (payload) => {
-            console.log('payload:', payload)
-            setMessages((prev) => {
-              const updatedMessages = [...prev, payload.new];
-              return updatedMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-            });
+          () => {
+            fetchMessages()
           }
         )
         .subscribe((status) => {
@@ -57,8 +53,10 @@ const useMessages = (supabase, conversationId) => {
     };
 
     // Initialize fetching and subscription
-    fetchMessages();
-    subscribeToMessages();
+    if (conversationId) {
+      fetchMessages();
+      subscribeToMessages();
+    }
 
     // Cleanup on unmount
     return () => {
@@ -68,7 +66,11 @@ const useMessages = (supabase, conversationId) => {
     };
   }, [supabase, conversationId]);
 
-  return { messages, loading, error };
+  return {
+    messages,
+    loading,
+    error
+  };
 };
 
 export default useMessages

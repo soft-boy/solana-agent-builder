@@ -19,7 +19,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 const LeftNavBar = () => {
   const navigate = useNavigate();
   const { agentId: selectedAgentId } = useParams();
-  const supabase = useSupabase();
+  const { supabase, session, email, logout } = useSupabase();
 
   const [agents, setAgents] = useState([]);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
@@ -29,28 +29,17 @@ const LeftNavBar = () => {
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
 
-  // Auth user
-  const [user, setUser] = useState(null);
-
   useEffect(() => {
     const fetchAgents = async () => {
       const fetchedAgents = await getFlowcharts(supabase);
       setAgents(fetchedAgents);
     };
 
-    const fetchUser = async () => {
-      const {
-        data: { user }
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
     fetchAgents();
-    fetchUser();
   }, [supabase]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await logout();
     navigate('/login');
   };
 
@@ -182,17 +171,17 @@ const LeftNavBar = () => {
 
       {/* User Badge */}
       <div className="p-4 border-t border-gray-700">
-        {user ? (
+        {session ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img
-                src={`https://ui-avatars.com/api/?name=${user.email}&background=random`}
+                src={`https://ui-avatars.com/api/?name=${email}&background=random`}
                 alt="User Avatar"
                 className="w-10 h-10 rounded-full"
               />
               <div>
                 <p className="text-sm font-medium">
-                  {user.email.split('@')[0]}
+                  {email.split('@')[0]}
                 </p>
               </div>
             </div>

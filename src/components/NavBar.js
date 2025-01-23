@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from '../lib/AppContext';
 import { useLocation, useParams } from 'react-router';
+import { useSupabase } from '../lib/SupabaseContext';
 
 const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
 
 const NavBar = ({ toggleDemo }) => {
+  const { userId } = useSupabase()
   const location = useLocation();
   const { agentId } = useParams()
+  const { setCurrentConvoId } = useContext(AppContext)
 
-  const handleRun = () => {
-    console.log(agentId)
-    fetch(`${BASE_URL}/.netlify/functions/message-convo`, {
+  const handleRun = async () => {
+    const response = await fetch(`${BASE_URL}/.netlify/functions/create-convo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        type: 'start', 
-        data: { flowchartId: agentId }
+      body: JSON.stringify({ 
+        agentId,
+        participantId: userId
       }),
     });
+    const { convo } = await response.json()
+    setCurrentConvoId(convo.id)
   }
 
   return (

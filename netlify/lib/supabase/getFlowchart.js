@@ -1,7 +1,7 @@
 const getFlowchart = async (supabase, flowchartId) => {
   try {
     const { data, error } = await supabase
-      .from('flowcharts')
+      .from('agents')
       .select('*')
       .eq('id', flowchartId)
       .single(); // Ensures a single row is returned
