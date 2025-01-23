@@ -1,4 +1,5 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import path from 'path';
 
 const options = {
   definition: {
@@ -13,7 +14,7 @@ const options = {
       },
     ],
   },
-  apis: ['./netlify/functions/*.mjs'], // files containing annotations as above
+  apis: [path.join(__dirname, '*.mjs')], // files containing annotations as above
 };
 
 const swagger = async () => {
