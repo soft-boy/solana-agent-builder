@@ -170,7 +170,7 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
                     type="text"
                     placeholder="path.to.value"
                     className="input input-bordered w-1/2"
-                    value={capture.key}
+                    value={capture.path}
                     onChange={(e) =>
                       handleCaptureChange(index, 'path', e.target.value)
                     }
@@ -179,7 +179,7 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
                     type="text"
                     placeholder="variable_name"
                     className="input input-bordered w-1/2"
-                    value={capture.value}
+                    value={capture.variable}
                     onChange={(e) =>
                       handleCaptureChange(index, 'variable', e.target.value)
                     }
