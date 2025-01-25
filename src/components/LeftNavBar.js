@@ -52,7 +52,11 @@ const LeftNavBar = () => {
   };
   
   const fetchAgents = async () => {
-    const { data, error } = await supabase.from('agents').select('*');
+    const { data, error } = await supabase
+      .from('agents')
+      .select('*')
+      .order('name', { ascending: true });
+      
     if (!error) {
       setAgents(data); // Set agents with the latest data from the database
     } else {
