@@ -122,7 +122,10 @@ const FlowEditor = () => {
           label: item.id.charAt(0).toUpperCase() + item.id.slice(1),
           type: item.id,
         },
-        style: { width: 200 },
+        style: {
+          width: 200,
+          backgroundColor: item.id === 'start' ? 'green' : undefined,
+        },
         sourcePosition: 'right',
         targetPosition: 'left',
       };

@@ -90,12 +90,12 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
                   }`}
                 >
                   {msg.sender === 'bot' && (
-                    <div className="chat-bubble text-white chat-bubble-primary">
+                    <div className="chat-bubble bg-black text-white chat-bubble-lg shadow-md">
                       {msg.text}
                     </div>
                   )}
                   {msg.sender === 'user' && (
-                    <div className="chat-bubble text-white chat-bubble-accent">
+                    <div className="chat-bubble bg-primary text-white chat-bubble-lg shadow-md">
                       {msg.text}
                     </div>
                   )}

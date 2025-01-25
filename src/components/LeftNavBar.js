@@ -7,13 +7,10 @@ import {
   FaTrash,
   FaRegCommentAlt
 } from 'react-icons/fa';
-import { IoLogOutOutline } from "react-icons/io5"; // <-- newly imported icon
+import { IoLogOutOutline } from "react-icons/io5";
 import { useSupabase } from '../lib/SupabaseContext';
-import {
-  createFlowchart,
-  getFlowcharts,
-  deleteFlowchart
-} from '../lib/flowcharts';
+import createAgent from '../lib/createAgent';
+import deleteAgent from '../lib/deleteAgent';
 import { Link, useNavigate, useParams } from 'react-router';
 
 const LeftNavBar = () => {
@@ -24,63 +21,49 @@ const LeftNavBar = () => {
   const [agents, setAgents] = useState([]);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [newAgentName, setNewAgentName] = useState('');
-
-  // Delete confirmation modal
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
 
+  const handleAddAgent = async () => {
+    if (!newAgentName.trim()) return;
+    const { agent, error } = await createAgent(supabase, newAgentName.trim(), session?.user?.id);
+    if (!error) {
+      setAgents((prev) => [...prev, agent]); // Update state immediately
+      setAddModalOpen(false);
+      setNewAgentName('');
+      fetchAgents(); // Sync with database
+    } else {
+      console.error('Error adding agent:', error);
+    }
+  };
+  
+  const handleConfirmDelete = async () => {
+    if (agentToDelete?.name === confirmName) {
+      const { success, error } = await deleteAgent(supabase, agentToDelete.id);
+      if (success) {
+        setAgents((prev) => prev.filter((agent) => agent.id !== agentToDelete.id)); // Update state immediately
+        setAgentToDelete(null);
+        setConfirmName('');
+        fetchAgents(); // Sync with database to ensure consistency
+      } else {
+        console.error('Error deleting agent:', error);
+      }
+    }
+  };
+  
+  const fetchAgents = async () => {
+    const { data, error } = await supabase.from('agents').select('*');
+    if (!error) {
+      setAgents(data); // Set agents with the latest data from the database
+    } else {
+      console.error('Error fetching agents:', error);
+    }
+  };
+  
   useEffect(() => {
-    const fetchAgents = async () => {
-      const fetchedAgents = await getFlowcharts(supabase);
-      setAgents(fetchedAgents);
-    };
-
     fetchAgents();
   }, [supabase]);
-
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
-
-  // Create a new agent
-  const onAddAgent = async (name) => {
-    const { data } = await createFlowchart(supabase, name);
-    setAgents((prevAgents) => [...prevAgents, ...data]);
-  };
-
-  // Delete an agent
-  const onDeleteAgent = async (agentId) => {
-    await deleteFlowchart(supabase, agentId);
-    setAgents((prevAgents) => prevAgents.filter((a) => a.id !== agentId));
-  };
-
-  // Handle adding
-  const handleAddAgent = () => {
-    if (!newAgentName.trim()) return;
-    onAddAgent(newAgentName.trim());
-    setNewAgentName('');
-    setAddModalOpen(false);
-  };
-
-  // Handle delete triggers
-  const handleDeleteClick = (agent) => {
-    setAgentToDelete(agent);
-    setConfirmName('');
-  };
-
-  const handleConfirmDelete = () => {
-    if (!agentToDelete) return;
-    onDeleteAgent(agentToDelete.id);
-    setAgentToDelete(null);
-    setConfirmName('');
-  };
-
-  const handleCancelDelete = () => {
-    setAgentToDelete(null);
-    setConfirmName('');
-  };
-
+  
   return (
     <div className="w-64 h-full bg-neutral text-white shadow-lg flex flex-col justify-between">
       {/* Sidebar Menu */}
@@ -122,10 +105,10 @@ const LeftNavBar = () => {
                       {agent.name}
                     </span>
                     <button
-                      className="p-1 rounded-md text-red-400 hover:text-red-500 hover:bg-gray-700"
+                      className="p-1 rounded-md btn-sm text-red-400 hover:text-red-500 hover:bg-gray-700"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDeleteClick(agent);
+                        setAgentToDelete(agent);
                       }}
                     >
                       <FaTrash />
@@ -179,25 +162,84 @@ const LeftNavBar = () => {
                 alt="User Avatar"
                 className="w-10 h-10 rounded-full"
               />
-              <div>
-                <p className="text-sm font-medium">
-                  {email.split('@')[0]}
-                </p>
-              </div>
+              <p className="truncate">{email.split('@')[0]}</p>
             </div>
-
-            {/* Red Logout Icon on the right */}
             <button
-              onClick={handleLogout}
-              className="p-2 text-red-500 hover:text-red-600 transition"
+              onClick={logout}
+              className="btn-s text-error"
             >
-              <IoLogOutOutline size={22} />
+              <IoLogOutOutline size={20} />
             </button>
           </div>
         ) : (
           <p className="text-sm italic text-gray-400">Not logged in</p>
         )}
       </div>
+
+      {/* Add Agent Modal */}
+      {isAddModalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box text-black">
+            <h3 className="font-bold text-lg">Add New Agent</h3>
+            <input
+              type="text"
+              placeholder="Enter agent name"
+              className="input input-bordered w-full mt-4"
+              value={newAgentName}
+              onChange={(e) => setNewAgentName(e.target.value)}
+            />
+            <div className="modal-action">
+              <button
+                className="btn btn-neutral text-white"
+                onClick={() => setAddModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary text-white"
+                onClick={handleAddAgent}
+                disabled={!newAgentName.trim()}
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {agentToDelete && (
+        <div className="modal modal-open">
+          <div className="modal-box text-black">
+            <h3 className="font-bold text-lg">Confirm Delete</h3>
+            <p>
+              Are you sure you want to delete <b>{agentToDelete.name}</b>?
+            </p>
+            <input
+              type="text"
+              placeholder="Type agent name to confirm"
+              className="input input-bordered w-full mt-4"
+              value={confirmName}
+              onChange={(e) => setConfirmName(e.target.value)}
+            />
+            <div className="modal-action">
+              <button
+                className="btn btn-neutral text-white"
+                onClick={() => setAgentToDelete(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-error text-white"
+                onClick={handleConfirmDelete}
+                disabled={confirmName !== agentToDelete?.name}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
