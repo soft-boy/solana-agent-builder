@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import createMessage from "./supabase/createMessage";
 import updateConvoNode from './supabase/updateConvoNode';
 import updateConvoVariable from './supabase/updateConvoVariable';
+import makeFetchRequest from './supabase/makeFetchRequest';
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -47,12 +48,52 @@ const runNode = async (node, context) => {
       return; // TODO
 
     case 'api':
-      return; // TODO
+      console.log('api')
+      const data = await makeFetchRequest(
+        node.data.requestType,
+        node.data.endpoint,
+        node.data.headers,
+        node.data.jsonPayload,
+      )
+      await processCaptures(
+        supabase,
+        data,
+        node.data.captures,
+        context
+      )
+      return;
 
     default:
       console.error('Unknown node type:', node.type);
       return null;
   }
 };
+
+async function processCaptures(supabase, data, captures, context) {
+  // Helper function to safely access a nested object path
+  function getValueFromPath(obj, path) {
+    return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+  }
+
+  // Loop through each capture entry
+  for (const capture of captures) {
+    const { path, variable } = capture;
+
+    // Safely access the path from the data object
+    const accessedValue = getValueFromPath(data, path);
+
+    if (accessedValue !== undefined) {
+      // Call updateConvoVariable if the value exists
+      await updateConvoVariable(
+        supabase,
+        variable,
+        accessedValue,
+        context
+      );
+    } else {
+      console.warn(`Path "${path}" could not be accessed on data.`);
+    }
+  }
+}
 
 export default runNode;
