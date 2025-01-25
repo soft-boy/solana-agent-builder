@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSupabase } from '../lib/SupabaseContext';
 import sendMessage from '../lib/sendMessage';
@@ -6,13 +6,13 @@ import useMessages from '../hooks/useMessages';
 import { AppContext } from '../lib/AppContext';
 import { useParams } from 'react-router';
 
-const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888'
+const BASE_URL = process.env.REACT_APP_URL || 'http://localhost:8888';
 
 const PreviewBot = ({ isOpen, closeDemo }) => {
-  const { agentId } = useParams()
-  const { supabase, userId } = useSupabase()
+  const { agentId } = useParams();
+  const { supabase, userId } = useSupabase();
   const { currentConvoId, setCurrentConvoId } = useContext(AppContext);
-  const { messages, loading, error } = useMessages(supabase, currentConvoId)
+  const { messages } = useMessages(supabase, currentConvoId);
   const [input, setInput] = useState('');
 
   const restart = async () => {
@@ -26,13 +26,13 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
         participantId: userId
       }),
     });
-    const { convo } = await response.json()
-    setCurrentConvoId(convo.id)
-  }
+    const { convo } = await response.json();
+    setCurrentConvoId(convo.id);
+  };
 
   const handleSend = async () => {
     if (input.trim()) {
-      sendMessage(supabase, currentConvoId, input, 'user')
+      sendMessage(supabase, currentConvoId, input, 'user');
       fetch(`${BASE_URL}/.netlify/functions/message-convo`, {
         method: 'POST',
         headers: {
@@ -45,6 +45,13 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
       });
 
       setInput('');
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
     }
   };
 
@@ -64,7 +71,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
               Close Demo
             </button>
 
-            {/* Close Button */}
+            {/* Restart Button */}
             <button className="btn mb-4" onClick={restart}>
               Restart
             </button>
@@ -105,6 +112,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
                   className="input input-bordered flex-1 bg-white text-black border-primary focus:outline-none focus:ring-2 focus:ring-primary rounded-lg"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
                 <button
                   className="btn bg-primary text-white hover:bg-blue-700 rounded-lg"
