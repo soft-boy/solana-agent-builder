@@ -1,38 +1,52 @@
 import { createClient } from '@supabase/supabase-js';
 import createMessage from "./supabase/createMessage";
 import updateConvoNode from './supabase/updateConvoNode';
+import updateConvoVariable from './supabase/updateConvoVariable';
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const runNode = (node, context) => {
-  console.log(context.convo, node.id)
-  updateConvoNode(supabase, context.convo.id, node.id);
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+function replacePlaceholders(data, template) { return template.replace(/{(.*?)}/g, (_, key) => data[key] || `{${key}}`); }
+
+const runNode = async (node, context) => {
+  console.log('runNode')
+  await sleep(100);
+  await updateConvoNode(supabase, node.id, context);
 
   switch (node.type) {
     case 'start':
-      console.log('Running "start" node:', node);
       return;
 
     case 'talk':
-      console.log('Running "talk" node:', node);
-      return createMessage(supabase, context.convo.id, 'bot', node.data.message);
+      console.log('talk')
+      const variableContext = context.convo.variable_context || {}
+      const messageTemplate = node.data.message
+      const message = replacePlaceholders(variableContext, messageTemplate)
+      createMessage(supabase, 'bot', message, context);
+      return;
 
     case 'listen':
-      console.log('Running "listen" node:', node);
-      return; // TODO
+      console.log('listen')
+      if (Object.keys(context).includes('message')) {
+        updateConvoVariable(
+          supabase,
+          node.data.listenVariable,
+          context.message,
+          context
+        )
+      }
+      return;
 
     case 'ai':
-      console.log('Running "ai" node:', node);
       return; // TODO
 
     case 'solana':
-      console.log('Running "solana" node:', node);
       return; // TODO
 
     case 'api':
-      console.log('Running "api" node:', node);
       return; // TODO
 
     default:

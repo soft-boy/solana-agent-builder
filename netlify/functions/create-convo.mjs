@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const startNodeId = 'node-start'
 
-const createConvo = async (req, context) => {
+const createConvo = async (req, reqContext) => {
   const bodyText = await req.text()
   const body = JSON.parse(bodyText);
   const { participantId, agentId } = body;
@@ -18,7 +18,8 @@ const createConvo = async (req, context) => {
   const { convo, error } = await createSBConvo(supabase, participantId, agentId)
   let { data: agent } = await getFlowchart(supabase, agentId)
   const flowchart = preprocess(agent.flowchart)
-  runFlowchart(flowchart, startNodeId, { convo })
+  let context = { convo }
+  runFlowchart(flowchart, startNodeId, context)
 
   return new Response(
     JSON.stringify({ convo, error }),

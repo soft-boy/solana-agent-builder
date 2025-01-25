@@ -1,4 +1,5 @@
-const createMessage = async (supabase, conversation_id, sender, text) => {
+const createMessage = async (supabase, sender, text, context) => {
+  const conversation_id = context.convo.id
   const { data, error } = await supabase
     .from('messages')
     .insert([{

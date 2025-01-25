@@ -32,14 +32,14 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
 
   const handleSend = async () => {
     if (input.trim()) {
-      sendMessage(supabase, 1, input, 'user')
+      sendMessage(supabase, currentConvoId, input, 'user')
       fetch(`${BASE_URL}/.netlify/functions/message-convo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          type: 'userMessage', 
+          conversationId: currentConvoId,
           message: input,
         }),
       });

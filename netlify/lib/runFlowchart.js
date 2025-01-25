@@ -6,8 +6,8 @@ const runFlowchart = async (flowchart, currentNodeId, context) => {
   let iters = 0
   let currentNode = flowchart[currentNodeId]
   while (currentNode && iters < MAX_ITERS) {
-    runNode(currentNode, context)
-    currentNode = getNextNode(currentNode, flowchart)
+    await runNode(currentNode, context)
+    currentNode = getNextNode(currentNode, flowchart, context)
     iters++;
   }
 };
