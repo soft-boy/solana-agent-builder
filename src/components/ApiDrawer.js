@@ -6,6 +6,7 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
   const [requestType, setRequestType] = useState('GET');
   const [headers, setHeaders] = useState([]);
   const [jsonPayload, setJsonPayload] = useState('');
+  const [captures, setCaptures] = useState([]);
 
   useEffect(() => {
     if (blockData) {
@@ -13,11 +14,12 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
       setRequestType(blockData.requestType || 'GET');
       setHeaders(blockData.headers || []);
       setJsonPayload(blockData.jsonPayload || '');
+      setCaptures(blockData.captures || []);
     }
   }, [blockData]);
 
   const handleSave = () => {
-    updateBlock({ endpoint, requestType, headers, jsonPayload });
+    updateBlock({ endpoint, requestType, headers, jsonPayload, captures });
     closeDrawer();
   };
 
@@ -34,6 +36,21 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
   const handleRemoveHeader = (index) => {
     const updatedHeaders = headers.filter((_, i) => i !== index);
     setHeaders(updatedHeaders);
+  };
+
+  const handleAddCapture = () => {
+    setCaptures([...captures, { path: '', variable: '' }]);
+  };
+
+  const handleCaptureChange = (index, field, value) => {
+    const updatedCaptures = [...captures];
+    updatedCaptures[index][field] = value;
+    setCaptures(updatedCaptures);
+  };
+
+  const handleRemoveCapture = (index) => {
+    const updatedCaptures = captures.filter((_, i) => i !== index);
+    setCaptures(updatedCaptures);
   };
 
   return (
@@ -53,20 +70,6 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
             </button>
           </div>
 
-          {/* API Endpoint */}
-          <div className="form-control mb-4">
-            <label className="label">
-              <span className="label-text">Endpoint URL</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Enter API endpoint"
-              className="input input-bordered"
-              value={endpoint}
-              onChange={(e) => setEndpoint(e.target.value)}
-            />
-          </div>
-
           {/* Request Type */}
           <div className="form-control mb-4">
             <label className="label">
@@ -80,6 +83,20 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
               <option value="GET">GET</option>
               <option value="POST">POST</option>
             </select>
+          </div>
+
+          {/* API Endpoint */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text">Endpoint URL</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Enter API endpoint"
+              className="input input-bordered"
+              value={endpoint}
+              onChange={(e) => setEndpoint(e.target.value)}
+            />
           </div>
 
           {/* Headers */}
@@ -140,6 +157,49 @@ const ApiDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
               ></textarea>
             </div>
           )}
+
+          {/* Capture Response */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text">Capture Response</span>
+            </label>
+            <div className="space-y-2">
+              {captures.map((capture, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    placeholder="path.to.value"
+                    className="input input-bordered w-1/2"
+                    value={capture.key}
+                    onChange={(e) =>
+                      handleCaptureChange(index, 'path', e.target.value)
+                    }
+                  />
+                  <input
+                    type="text"
+                    placeholder="variable_name"
+                    className="input input-bordered w-1/2"
+                    value={capture.value}
+                    onChange={(e) =>
+                      handleCaptureChange(index, 'variable', e.target.value)
+                    }
+                  />
+                  <button
+                    className="btn btn-sm btn-error text-white"
+                    onClick={() => handleRemoveCapture(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                className="btn btn-sm text-white btn-primary mt-2"
+                onClick={handleAddCapture}
+              >
+                Add Capture
+              </button>
+            </div>
+          </div>
 
           {/* Save Button */}
           <div className="mt-4">
