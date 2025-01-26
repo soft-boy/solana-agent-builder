@@ -12,11 +12,11 @@ import {
 import { useSupabase } from '../lib/SupabaseContext';
 import { useDrop } from 'react-dnd';
 import Toolbox from './Toolbox';
-import TalkDrawer from './TalkDrawer';
-import ListenDrawer from './ListenDrawer';
-import AiDrawer from './AiDrawer';
-import ApiDrawer from './ApiDrawer';
-import SolanaDrawer from './SolanaDrawer';
+import TalkDrawer from './drawers/TalkDrawer';
+import ListenDrawer from './drawers/ListenDrawer';
+import AiDrawer from './drawers/AiDrawer';
+import ApiDrawer from './drawers/ApiDrawer';
+import SolanaDrawer from './drawers/SolanaDrawer';
 import { useParams } from 'react-router';
 import '@xyflow/react/dist/style.css';
 import { toast } from 'react-toastify';
@@ -269,6 +269,8 @@ const FlowEditor = () => {
           key={agentId} // re-initialize for each agent
           nodes={nodes}
           edges={edges}
+          defaultEdgeOptions={{ type: 'smoothstep' }} // Default to smoothstep
+          connectionLineType="smoothstep"
           onNodesChange={(changes) => {
             onNodesChange(changes);
             saveFlowchart(nodes, edges);
