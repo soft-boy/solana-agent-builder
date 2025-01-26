@@ -5,13 +5,14 @@ import NavBar from "./components/NavBar";
 import LeftNavBar from "./components/LeftNavBar";
 import PreviewBot from "./components/PreviewBot";
 import FlowEditor from "./components/FlowEditor";
-import HomeView from "./components/HomeView";
+import HomeView from "./components/home/HomeView";
 import MessagesView from "./components/MessagesView";
 import SettingsView from "./components/SettingsView";
 import LoginView from "./components/LoginView";
 import RegisterView from "./components/RegisterView";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useSupabase } from "./lib/SupabaseContext";
+import { ToastContainer, toast } from 'react-toastify';
 
 export const App = () => {
   const { session, loading } = useSupabase()
@@ -61,6 +62,7 @@ const Layout = () => {
 
   return (
     <div className="flex h-screen flex-col bg-base-100">
+      <ToastContainer />
       <header className="h-16">
         <NavBar toggleDemo={toggleDemo} />
       </header>

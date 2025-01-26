@@ -19,6 +19,7 @@ import ApiDrawer from './ApiDrawer';
 import SolanaDrawer from './SolanaDrawer';
 import { useParams } from 'react-router';
 import '@xyflow/react/dist/style.css';
+import { toast } from 'react-toastify';
 
 const FlowEditor = () => {
   const { agentId } = useParams();
@@ -180,8 +181,14 @@ const FlowEditor = () => {
    */
   const handleDelete = () => {
     if (!contextMenu.type) return;
-
+  
     if (contextMenu.type === 'node' && contextMenu.nodeId) {
+      // Prevent deletion of the start node
+      if (contextMenu.nodeId === 'node-start') {
+        toast.error("You can't delete the start node");
+        return;
+      }
+  
       setNodes((currNodes) => {
         const newNodes = currNodes.filter((n) => n.id !== contextMenu.nodeId);
         const newEdges = edges.filter(
@@ -198,7 +205,7 @@ const FlowEditor = () => {
         return newEdges;
       });
     }
-
+  
     // hide menu afterwards
     setContextMenu({
       visible: false,
