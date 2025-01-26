@@ -16,6 +16,7 @@ import TalkDrawer from './TalkDrawer';
 import ListenDrawer from './ListenDrawer';
 import AiDrawer from './AiDrawer';
 import ApiDrawer from './ApiDrawer';
+import SolanaDrawer from './SolanaDrawer';
 import { useParams } from 'react-router';
 import '@xyflow/react/dist/style.css';
 
@@ -329,6 +330,14 @@ const FlowEditor = () => {
       )}
       {selectedNode && selectedNode.data.type === 'ai' && (
         <AiDrawer
+          isOpen={!!selectedNode}
+          blockData={selectedNode.data}
+          closeDrawer={() => setSelectedNode(null)}
+          updateBlock={(updatedData) => updateNodeData(selectedNode.id, updatedData)}
+        />
+      )}
+      {selectedNode && selectedNode.data.type === 'solana' && (
+        <SolanaDrawer
           isOpen={!!selectedNode}
           blockData={selectedNode.data}
           closeDrawer={() => setSelectedNode(null)}
