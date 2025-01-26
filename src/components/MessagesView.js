@@ -8,6 +8,7 @@ const MessagesView = () => {
   const [messages, setMessages] = useState([]);
   const [loadingConversations, setLoadingConversations] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(false);
+  const [agentName, setAgentName] = useState(null);
 
   // Fetch conversations
   useEffect(() => {
@@ -59,7 +60,26 @@ const MessagesView = () => {
       }
     };
 
+    const fetchAgentName = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("agents")
+          .select("name")
+          .eq("id", selectedConversation.agent_id)
+          .single();
+
+        if (error) {
+          console.error("Error fetching agent name:", error.message);
+        } else {
+          setAgentName(data.name);
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error.message);
+      }
+    };
+
     fetchMessages();
+    fetchAgentName();
   }, [selectedConversation]);
 
   return (
@@ -99,9 +119,15 @@ const MessagesView = () => {
       <div className="flex-1 p-4 bg-base-100">
         {selectedConversation ? (
           <>
-            <h2 className="text-lg font-bold mb-4">
-              Messages for Conversation {selectedConversation.id}
-            </h2>
+            {/* Header with Agent Name */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold">
+                Messages for Conversation {selectedConversation.id}
+              </h2>
+              <p className="text-sm text-gray-500">
+                Agent: {agentName || "Loading..."}
+              </p>
+            </div>
             {loadingMessages ? (
               <div className="text-center text-gray-500">Loading messages...</div>
             ) : messages.length > 0 ? (
