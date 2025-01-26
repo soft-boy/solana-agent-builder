@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSupabase } from "../lib/SupabaseContext";
 
 const MessagesView = () => {
-  const supabase = useSupabase()
+  const { supabase } = useSupabase()
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +37,7 @@ const MessagesView = () => {
         <div className="text-center text-gray-500">Loading...</div>
       ) : messages.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="table table-zebra w-full">
+          <table className="table table-xs w-full">
             <thead>
               <tr>
                 <th>ID</th>
