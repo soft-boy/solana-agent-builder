@@ -46,7 +46,7 @@ const runNode = async (node, context) => {
       return;
 
     case 'ai':
-      console.log('listen')
+      console.log('AI')
       const systemPrompt = replacePlaceholders(variableContext, node.data.systemPrompt)
       const userPrompt = replacePlaceholders(variableContext, node.data.userPrompt)
       const completion = await openai.chat.completions.create({

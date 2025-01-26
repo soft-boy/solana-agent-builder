@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import useSupabase from '../hooks/useSupabase';
-import useWallets from '../hooks/useWallets';
+import useSupabase from '../../hooks/useSupabase';
+import useWallets from '../../hooks/useWallets';
 
 const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
   const { supabase } = useSupabase()

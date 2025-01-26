@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSupabase } from "../lib/SupabaseContext";
+import { useSupabase } from "../../lib/SupabaseContext";
 
 const MessagesView = () => {
   const { supabase } = useSupabase();

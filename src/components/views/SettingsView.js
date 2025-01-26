@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PublicKey, Keypair } from '@solana/web3.js';
-import useSupabase from '../hooks/useSupabase';
-import { encryptPrivateKey } from '../lib/encryption';
+import useSupabase from '../../hooks/useSupabase';
+import { encryptPrivateKey } from '../../lib/encryption';
 
 const SettingsView = () => {
   const { supabase } = useSupabase();

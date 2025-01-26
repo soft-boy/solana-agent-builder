@@ -59,7 +59,7 @@ const PreviewBot = ({ isOpen, closeDemo }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="absolute top-0 right-0 h-full w-80 bg-neutral text-white shadow-lg p-4 z-20"
+          className="fixed top-0 right-0 h-full w-80 bg-neutral text-white shadow-lg p-4 z-20 overflow-x-hidden overflow-y-auto"
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
