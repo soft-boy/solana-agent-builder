@@ -2,18 +2,50 @@ import { useEffect, useState } from "react";
 import { useSupabase } from "../lib/SupabaseContext";
 
 const MessagesView = () => {
-  const { supabase } = useSupabase()
+  const { supabase } = useSupabase();
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
+  // Fetch conversations
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchConversations = async () => {
+      setLoadingConversations(true);
       try {
-        setLoading(true);
         const { data, error } = await supabase
-          .from("messages") // Name of your Supabase table
+          .from("conversations")
+          .select("id, agent_id, created_at")
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error fetching conversations:", error.message);
+        } else {
+          setConversations(data);
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error.message);
+      } finally {
+        setLoadingConversations(false);
+      }
+    };
+
+    fetchConversations();
+  }, []);
+
+  // Fetch messages for the selected conversation
+  useEffect(() => {
+    if (!selectedConversation) return;
+
+    const fetchMessages = async () => {
+      setLoadingMessages(true);
+      try {
+        const { data, error } = await supabase
+          .from("messages")
           .select("*")
-          .order("created_at", { ascending: true }); // Sort messages by created_at
+          .eq("conversation_id", selectedConversation.id)
+          .order("created_at", { ascending: true });
 
         if (error) {
           console.error("Error fetching messages:", error.message);
@@ -23,44 +55,89 @@ const MessagesView = () => {
       } catch (error) {
         console.error("Unexpected error:", error.message);
       } finally {
-        setLoading(false);
+        setLoadingMessages(false);
       }
     };
 
     fetchMessages();
-  }, []);
+  }, [selectedConversation]);
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Messages</h1>
-      {loading ? (
-        <div className="text-center text-gray-500">Loading...</div>
-      ) : messages.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="table table-xs w-full">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Content</th>
-                <th>Sender</th>
-                <th>Created At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {messages.map((message) => (
-                <tr key={message.id}>
-                  <td>{message.id}</td>
-                  <td>{message.text}</td>
-                  <td>{message.sender}</td>
-                  <td>{new Date(message.created_at).toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="text-center text-gray-500">No messages found</div>
-      )}
+    <div className="flex h-screen">
+      {/* Conversations List */}
+      <div className="w-1/4 bg-base-200 p-4 overflow-y-auto">
+        <h2 className="text-lg font-bold mb-4">Conversations</h2>
+        {loadingConversations ? (
+          <div className="text-center text-gray-500">Loading...</div>
+        ) : conversations.length > 0 ? (
+          <ul className="menu bg-base-100 rounded-box">
+            {conversations.map((conversation) => (
+              <li
+                key={conversation.id}
+                onClick={() => setSelectedConversation(conversation)}
+                className={`cursor-pointer ${
+                  selectedConversation?.id === conversation.id
+                    ? "bg-primary text-white"
+                    : "hover:bg-gray-300"
+                }`}
+              >
+                <a>
+                  Conversation {conversation.id} <br />
+                  <span className="text-xs text-gray-500">
+                    {new Date(conversation.created_at).toLocaleDateString()}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="text-center text-gray-500">No conversations found</div>
+        )}
+      </div>
+
+      {/* Messages View */}
+      <div className="flex-1 p-4 bg-base-100">
+        {selectedConversation ? (
+          <>
+            <h2 className="text-lg font-bold mb-4">
+              Messages for Conversation {selectedConversation.id}
+            </h2>
+            {loadingMessages ? (
+              <div className="text-center text-gray-500">Loading messages...</div>
+            ) : messages.length > 0 ? (
+              <div className="space-y-4 overflow-y-auto">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`chat ${
+                      message.sender === "user" ? "chat-end" : "chat-start"
+                    }`}
+                  >
+                    <div
+                      className={`chat-bubble text-white chat-bubble-lg shadow-md ${
+                        message.sender === "user" ? "bg-primary" : "bg-black"
+                      }`}
+                    >
+                      {message.text}
+                      <span className="text-xs block mt-1 text-right text-gray-400">
+                        {new Date(message.created_at).toLocaleTimeString()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">
+                No messages in this conversation
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center text-gray-500">
+            Select a conversation to view messages
+          </div>
+        )}
+      </div>
     </div>
   );
 };
