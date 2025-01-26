@@ -82,7 +82,7 @@ const SettingsView = () => {
     <div className="p-6 bg-base-100 text-base-content">
       <h1 className="text-2xl font-bold mb-4">Manage Solana Wallets</h1>
       <div className="alert alert-warning mb-4">
-        Warning: Private keys are stored in the database for this tech demo. This is <b>NOT</b> secure for production. Do not use real wallets or store sensitive private keys.
+        Warning: Private keys are stored in the database for this tech demo. This is NOT secure for production. Do not use real wallets or store sensitive private keys.
       </div>
 
       {loading && <p className="text-info mb-4">Loading...</p>}
