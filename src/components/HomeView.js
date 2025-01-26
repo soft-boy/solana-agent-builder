@@ -15,7 +15,7 @@ const HomeView = () => {
     const { data, error } = await supabase
       .from('agents')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('name', { ascending: true });;
 
     if (error) {
       setError('Failed to fetch agents.');

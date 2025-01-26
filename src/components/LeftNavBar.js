@@ -85,7 +85,7 @@ const LeftNavBar = () => {
 
         {/* Agents Collapse */}
         <li tabIndex={0} className="collapse collapse-arrow rounded-lg">
-          <input type="checkbox" />
+          <input type="checkbox" defaultChecked />
           <div className="collapse-title flex items-center space-x-3 p-3 font-medium hover:bg-gray-600 transition">
             <FaFolder className="text-lg" />
             <span>Agents</span>
