@@ -3,6 +3,9 @@ import createMessage from "./supabase/createMessage";
 import updateConvoNode from './supabase/updateConvoNode';
 import updateConvoVariable from './supabase/updateConvoVariable';
 import makeFetchRequest from './supabase/makeFetchRequest';
+import OpenAI from "openai";
+
+const openai = new OpenAI();
 
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -17,13 +20,14 @@ const runNode = async (node, context) => {
   await sleep(100);
   await updateConvoNode(supabase, node.id, context);
 
+  const variableContext = context.convo.variable_context || {}
+
   switch (node.type) {
     case 'start':
       return;
 
     case 'talk':
       console.log('talk')
-      const variableContext = context.convo.variable_context || {}
       const messageTemplate = node.data.message
       const message = replacePlaceholders(variableContext, messageTemplate)
       createMessage(supabase, 'bot', message, context);
@@ -42,7 +46,24 @@ const runNode = async (node, context) => {
       return;
 
     case 'ai':
-      return; // TODO
+      console.log('listen')
+      const systemPrompt = replacePlaceholders(variableContext, node.data.systemPrompt)
+      const userPrompt = replacePlaceholders(variableContext, node.data.userPrompt)
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+            { role: "system", content: systemPrompt },
+            {
+                role: "user",
+                content: userPrompt,
+            },
+        ],
+        temperature: node.data.temperature,
+        store: true,
+      });
+
+      createMessage(supabase, 'bot', completion.choices[0].message.content, context);
+      return;
 
     case 'solana':
       return; // TODO
