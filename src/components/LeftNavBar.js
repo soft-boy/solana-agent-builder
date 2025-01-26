@@ -140,7 +140,7 @@ const LeftNavBar = () => {
             className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
           >
             <FaRegCommentAlt className="text-lg" />
-            <span className="font-medium">Messages</span>
+            <span className="font-medium">Message History</span>
           </Link>
         </li>
 
