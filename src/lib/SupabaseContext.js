@@ -7,7 +7,7 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Create the context
-const SupabaseContext = createContext();
+export const SupabaseContext = createContext();
 
 export const SupabaseProvider = ({ children }) => {
   const [session, setSession] = useState(null);
