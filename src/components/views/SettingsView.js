@@ -82,7 +82,7 @@ const SettingsView = () => {
     <div className="p-6 bg-base-100 text-base-content">
       <h1 className="text-2xl font-bold mb-4">Manage Solana Wallets</h1>
       <div className="alert alert-warning mb-4">
-        Warning: Private keys are stored in the database for this tech demo. This is NOT secure for production. Do not use real wallets or store sensitive private keys.
+         Warning: Private keys are stored in the database for this tech demo. This is NOT secure for production. Do not use real wallets or store sensitive private keys.
       </div>
 
       {loading && <p className="text-info mb-4">Loading...</p>}
@@ -101,7 +101,7 @@ const SettingsView = () => {
           <button
             onClick={addWallet}
             disabled={loading}
-            className={`btn btn-primary ${loading ? 'loading' : ''}`}
+            className={`btn text-white btn-primary ${loading ? 'loading' : ''}`}
           >
             Generate & Add Wallet
           </button>
@@ -131,7 +131,7 @@ const SettingsView = () => {
                       <button
                         onClick={() => deleteWallet(wallet.id)}
                         disabled={loading}
-                        className={`btn btn-error btn-sm ${loading ? 'loading' : ''}`}
+                        className={`btn text-white btn-error btn-sm ${loading ? 'loading' : ''}`}
                       >
                         Delete
                       </button>

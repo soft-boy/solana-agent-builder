@@ -11,10 +11,11 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { useSupabase } from '../lib/SupabaseContext';
 import createAgent from '../lib/createAgent';
 import deleteAgent from '../lib/deleteAgent';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams, useLocation } from 'react-router';
 
 const LeftNavBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { agentId: selectedAgentId } = useParams();
   const { supabase, session, email, logout } = useSupabase();
 
@@ -24,50 +25,19 @@ const LeftNavBar = () => {
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
 
-  const handleAddAgent = async () => {
-    if (!newAgentName.trim()) return;
-    const { agent, error } = await createAgent(supabase, newAgentName.trim(), session?.user?.id);
-    if (!error) {
-      setAgents((prev) => [...prev, agent]); // Update state immediately
-      setAddModalOpen(false);
-      setNewAgentName('');
-      fetchAgents(); // Sync with database
-    } else {
-      console.error('Error adding agent:', error);
-    }
-  };
-  
-  const handleConfirmDelete = async () => {
-    if (agentToDelete?.name === confirmName) {
-      const { success, error } = await deleteAgent(supabase, agentToDelete.id);
-      if (success) {
-        setAgents((prev) => prev.filter((agent) => agent.id !== agentToDelete.id)); // Update state immediately
-        setAgentToDelete(null);
-        setConfirmName('');
-        fetchAgents(); // Sync with database to ensure consistency
-      } else {
-        console.error('Error deleting agent:', error);
-      }
-    }
-  };
-  
   const fetchAgents = async () => {
     const { data, error } = await supabase
       .from('agents')
       .select('*')
       .order('name', { ascending: true });
-      
-    if (!error) {
-      setAgents(data); // Set agents with the latest data from the database
-    } else {
-      console.error('Error fetching agents:', error);
-    }
+
+    if (!error) setAgents(data);
   };
-  
+
   useEffect(() => {
     fetchAgents();
   }, [supabase]);
-  
+
   return (
     <div className="w-64 h-full bg-neutral text-white shadow-lg flex flex-col justify-between">
       {/* Sidebar Menu */}
@@ -76,14 +46,16 @@ const LeftNavBar = () => {
         <li>
           <Link
             to="/"
-            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
+            className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition ${
+              location.pathname === '/' ? 'text-[#4f84fb]' : ''
+            }`}
           >
             <FaHome className="text-lg" />
             <span className="font-medium">Home</span>
           </Link>
         </li>
 
-        {/* Agents Collapse */}
+        {/* Agents */}
         <li tabIndex={0} className="collapse collapse-arrow rounded-lg">
           <input type="checkbox" />
           <div className="collapse-title flex items-center space-x-3 p-3 font-medium hover:bg-gray-600 transition">
@@ -137,7 +109,9 @@ const LeftNavBar = () => {
         <li>
           <Link
             to="/messages"
-            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
+            className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition ${
+              location.pathname === '/messages' ? 'text-[#4f84fb]' : ''
+            }`}
           >
             <FaRegCommentAlt className="text-lg" />
             <span className="font-medium">Message History</span>
@@ -148,7 +122,9 @@ const LeftNavBar = () => {
         <li>
           <Link
             to="/settings"
-            className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition"
+            className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition ${
+              location.pathname === '/settings' ? 'text-[#4f84fb]' : ''
+            }`}
           >
             <FaCog className="text-lg" />
             <span className="font-medium">Settings</span>
@@ -168,10 +144,7 @@ const LeftNavBar = () => {
               />
               <p className="truncate">{email.split('@')[0]}</p>
             </div>
-            <button
-              onClick={logout}
-              className="btn-s text-error"
-            >
+            <button onClick={logout} className="btn-s text-error">
               <IoLogOutOutline size={20} />
             </button>
           </div>
@@ -179,71 +152,6 @@ const LeftNavBar = () => {
           <p className="text-sm italic text-gray-400">Not logged in</p>
         )}
       </div>
-
-      {/* Add Agent Modal */}
-      {isAddModalOpen && (
-        <div className="modal modal-open">
-          <div className="modal-box text-black">
-            <h3 className="font-bold text-lg">Add New Agent</h3>
-            <input
-              type="text"
-              placeholder="Enter agent name"
-              className="input input-bordered w-full mt-4"
-              value={newAgentName}
-              onChange={(e) => setNewAgentName(e.target.value)}
-            />
-            <div className="modal-action">
-              <button
-                className="btn btn-neutral text-white"
-                onClick={() => setAddModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-primary text-white"
-                onClick={handleAddAgent}
-                disabled={!newAgentName.trim()}
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {agentToDelete && (
-        <div className="modal modal-open">
-          <div className="modal-box text-black">
-            <h3 className="font-bold text-lg">Confirm Delete</h3>
-            <p>
-              Are you sure you want to delete <b>{agentToDelete.name}</b>?
-            </p>
-            <input
-              type="text"
-              placeholder="Type agent name to confirm"
-              className="input input-bordered w-full mt-4"
-              value={confirmName}
-              onChange={(e) => setConfirmName(e.target.value)}
-            />
-            <div className="modal-action">
-              <button
-                className="btn btn-neutral text-white"
-                onClick={() => setAgentToDelete(null)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-error text-white"
-                onClick={handleConfirmDelete}
-                disabled={confirmName !== agentToDelete?.name}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

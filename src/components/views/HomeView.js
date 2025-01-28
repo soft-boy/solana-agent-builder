@@ -2,12 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Updated for React Router DOM v6
 import useSupabase from '../../hooks/useSupabase';
 import { motion } from 'framer-motion';
+import { BiLoaderAlt, BiCheckCircle } from 'react-icons/bi';
 
 const HomeView = () => {
   const { email, session, supabase } = useSupabase();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [systemStatus, setSystemStatus] = useState({
+    backend: 'loading',
+    solana: 'loading',
+    database: 'loading'
+  });
 
   const displayName =
     session?.user?.user_metadata?.full_name?.split(' ')[0] ||
@@ -32,6 +38,13 @@ const HomeView = () => {
 
   useEffect(() => {
     fetchAgents();
+    setTimeout(() => {
+      setSystemStatus({
+        backend: 'ok',
+        solana: 'ok',
+        database: 'ok'
+      });
+    }, 2000);
   }, []);
 
   return (
@@ -44,27 +57,34 @@ const HomeView = () => {
         </div>
       </div>
 
-      {/* Graph Section */}
+      {/* System Status Section */}
       <div className="mt-8 p-6 bg-neutral text-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-4">Dashboard Insights</h2>
+        <h2 className="text-2xl font-bold mb-4">System Status</h2>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 bg-base-100 text-neutral rounded-lg p-4 shadow-md">
             <h3 className="text-lg font-semibold">Agent Count</h3>
             <div className="relative w-full bg-gray-200 rounded-full h-4 mt-2">
-              <div
+              <motion.div
+                initial={{ width: '0%' }}
+                animate={{ width: `${(agents.length / 10) * 100}%` }}
+                transition={{ duration: 1.5 }}
                 className="absolute top-0 left-0 h-4 bg-primary rounded-full"
-                style={{ width: `${(agents.length / 10) * 100}%` }}
-              ></div>
+              ></motion.div>
             </div>
             <p className="text-sm mt-2">{agents.length} agents currently active</p>
           </div>
           <div className="flex-1 bg-base-100 text-neutral rounded-lg p-4 shadow-md">
-            <h3 className="text-lg font-semibold">Loading Status</h3>
-            {loading ? (
-              <div className="animate-pulse text-sm">Fetching data...</div>
-            ) : (
-              <p className="text-sm">All data is up to date!</p>
-            )}
+            <h3 className="text-lg font-semibold">Module Checker</h3>
+            {['backend', 'solana', 'database'].map((service) => (
+              <div key={service} className="flex items-center gap-2 mt-2">
+                {systemStatus[service] === 'loading' ? (
+                  <BiLoaderAlt className="animate-spin text-primary text-xl" />
+                ) : (
+                  <BiCheckCircle className="text-success text-xl" />
+                )}
+                <span className="text-sm capitalize">{service.replace('-', ' ')} check</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -116,7 +116,7 @@ const MessagesView = () => {
       </div>
 
       {/* Messages View */}
-      <div className="flex-1 p-4 bg-base-100">
+      <div className="flex-1 p-4 bg-base-100 overflow-y-auto">
         {selectedConversation ? (
           <>
             {/* Header with Agent Name */}
@@ -159,7 +159,7 @@ const MessagesView = () => {
             )}
           </>
         ) : (
-          <div className="text-center text-gray-500">
+          <div className="text-center justify-center text-gray-500">
             Select a conversation to view messages
           </div>
         )}
