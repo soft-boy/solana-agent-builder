@@ -19,6 +19,17 @@ const messageConvo = async (req, reqContext) => {
   let { data: agent } = await getFlowchart(supabase, convo.agent_id)
   const flowchart = preprocess(agent.flowchart)
 
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204, // No Content
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
+  }
+
   try {
     let context = { convo, message }
     runFlowchart(flowchart, currentNodeId, context)
@@ -32,8 +43,16 @@ const messageConvo = async (req, reqContext) => {
 
   return new Response(
     JSON.stringify({ success: true }),
-    { status: 200, headers: { "Content-Type": "application/json" },
-  });
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*", // Allow all origins
+        "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    }
+  );  
 }
 
 export default messageConvo;
