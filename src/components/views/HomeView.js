@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; // Updated for React Router DOM v6
 import useSupabase from '../../hooks/useSupabase';
 import { motion } from 'framer-motion';
-import { BiLoaderAlt, BiCheckCircle } from 'react-icons/bi';
+import { BiLoaderAlt, BiCheckCircle, BiWallet, BiCodeBlock, BiServer, BiPulse, BiChip } from 'react-icons/bi';
 
 const HomeView = () => {
   const { email, session, supabase } = useSupabase();
@@ -99,19 +99,31 @@ const HomeView = () => {
         <p className="text-gray-500">No agents found. Create one to get started!</p>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-8">
         {agents.map((agent) => (
           <Link to={`/agent/${agent.id}`} key={agent.id}>
             <motion.div
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              className="card shadow-xl hover:shadow-2xl transition-all duration-300"
+              className="card bg-white pt-3 pb-3 rounded-3xl shadow-lg border shadow-blue-800/40 border-blue-700 hover:border-indigo-600 transition-all duration-300"
             >
               <div className="card-body">
-                <h2 className="card-title text-lg font-semibold">{agent.name}</h2>
-                <p className="text-sm text-gray-400">
-                  Created on: {new Date(agent.created_at).toLocaleDateString()}
-                </p>
+                <h2 className="card-title text-lg font-semibold text-primary">{agent.name}</h2>
+                <p className="text-sm text-gray-400">Created on: {new Date(agent.created_at).toLocaleDateString()}</p>
+                <div className="mt-3 space-y-1">
+                  <div className="flex items-center gap-2 text-green-600">
+                    <BiWallet className="text-lg" />
+                    <span className="text-sm font-medium">Secure Wallet Linked</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-info font-medium">
+                    <BiChip className="text-lg" />
+                    <span className="text-sm">Real-time AI Processing</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-warning font-medium">
+                    <BiServer className="text-lg" />
+                    <span className="text-sm">Cloud Sync Enabled</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </Link>

@@ -9,7 +9,7 @@ module.exports = {
     themes: [
       {
         ultramodern: {
-          primary: '#4581fd', // Blue for buttons and accents
+          primary: '#3b82f6', // Blue for buttons and accents
           secondary: '#22D3EE', // Cyan (can be used sparingly)
           accent: '#F43F5E', // Red for warnings or highlights
           neutral: '#202429', // Dark gray for menus and cards

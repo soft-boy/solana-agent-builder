@@ -123,7 +123,7 @@ const LeftNavBar = () => {
           <Link
             to="/settings"
             className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-600 transition ${
-              location.pathname === '/settings' ? 'text-[#4f84fb]' : ''
+              location.pathname === '/settings' ? 'text-[#5183f8]' : ''
             }`}
           >
             <FaCog className="text-lg" />

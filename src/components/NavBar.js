@@ -48,7 +48,7 @@ const NavBar = ({ toggleDemo }) => {
               handleRun();
               toggleDemo();
             }}
-            className="btn bg-primary text-white hover:bg-blue-700"
+            className="btn  btn-3xl bg-blue-500 text-white pr-6 pl-6 hover:bg-blue-700"
           >
             Run
           </button>
