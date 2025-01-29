@@ -10,15 +10,6 @@ const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const messageConvo = async (req, reqContext) => {
-  const bodyText = await req.text()
-  const body = JSON.parse(bodyText);
-  const { message, conversationId } = body;
-
-  const { data: convo } = await getConvo(supabase, conversationId)
-  const currentNodeId = convo.current_node
-  let { data: agent } = await getFlowchart(supabase, convo.agent_id)
-  const flowchart = preprocess(agent.flowchart)
-
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204, // No Content
@@ -29,6 +20,15 @@ const messageConvo = async (req, reqContext) => {
       },
     });
   }
+  
+  const bodyText = await req.text()
+  const body = JSON.parse(bodyText);
+  const { message, conversationId } = body;
+
+  const { data: convo } = await getConvo(supabase, conversationId)
+  const currentNodeId = convo.current_node
+  let { data: agent } = await getFlowchart(supabase, convo.agent_id)
+  const flowchart = preprocess(agent.flowchart)
 
   try {
     let context = { convo, message }

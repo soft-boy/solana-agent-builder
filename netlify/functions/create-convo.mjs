@@ -11,16 +11,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const startNodeId = 'node-start'
 
 const createConvo = async (req, reqContext) => {
-  const bodyText = await req.text()
-  const body = JSON.parse(bodyText);
-  const { participantId, agentId } = body;
-
-  const { convo, error } = await createSBConvo(supabase, participantId, agentId)
-  let { data: agent } = await getFlowchart(supabase, agentId)
-  const flowchart = preprocess(agent.flowchart)
-  let context = { convo }
-  runFlowchart(flowchart, startNodeId, context)
-
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204, // No Content
@@ -31,6 +21,16 @@ const createConvo = async (req, reqContext) => {
       },
     });
   }
+
+  const bodyText = await req.text()
+  const body = JSON.parse(bodyText);
+  const { participantId, agentId } = body;
+
+  const { convo, error } = await createSBConvo(supabase, participantId, agentId)
+  let { data: agent } = await getFlowchart(supabase, agentId)
+  const flowchart = preprocess(agent.flowchart)
+  let context = { convo }
+  runFlowchart(flowchart, startNodeId, context)
 
   return new Response(
     JSON.stringify({ convo, error }),
