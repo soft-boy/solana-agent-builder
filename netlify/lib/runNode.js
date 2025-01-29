@@ -66,7 +66,8 @@ const runNode = async (node, context) => {
       return;
 
     case 'solana':
-      return; // TODO
+      console.log('solana')
+      return;
 
     case 'api':
       console.log('api')

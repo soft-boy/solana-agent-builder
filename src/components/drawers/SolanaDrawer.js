@@ -6,16 +6,25 @@ import useWallets from '../../hooks/useWallets';
 const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
   const { supabase } = useSupabase()
   const { wallets } = useWallets(supabase);
+  const [selectedWallet, setSelectedWallet] = useState('');
   const [actionType, setActionType] = useState('/get-sol-price');
 
   useEffect(() => {
     if (blockData) {
-      setActionType(blockData.actionType || '');
+      setSelectedWallet(blockData.wallet || '');
+      setActionType(blockData.action || '');
     }
   }, [blockData]);
 
   const handleSave = () => {
-    updateBlock({ actionType });
+    console.log('updateBlock:', {
+      wallet: selectedWallet,
+      action: actionType
+    })
+    updateBlock({
+      wallet: selectedWallet,
+      action: actionType
+    });
     closeDrawer();
   };
 
@@ -43,9 +52,13 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
             </label>
             <select
               className="select select-bordered"
-              value={actionType}
-              onChange={(e) => setActionType(e.target.value)}
+              value={selectedWallet}
+              onChange={(e) => {
+                console.log('wallet onChange:', e.target.value)
+                setSelectedWallet(e.target.value)
+              }}
             >
+              <option value="" disabled>Select a wallet</option> 
               {wallets.map((wallet) => (
                 <option value={wallet.id}>{wallet.wallet_name}</option>
               ))}
@@ -60,22 +73,26 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
             <select
               className="select select-bordered"
               value={actionType}
-              onChange={(e) => setActionType(e.target.value)}
+              onChange={(e) => {
+                console.log('action onChange:', e.target.value)
+                setActionType(e.target.value)
+              }}
             >
-              <option value="/close-empty-accounts" disabled>Close Empty Accounts</option>
-              <option value="/deploy-new-token" disabled>Deploy a New Token</option>
+              <option value="" disabled>Select an action</option> 
+              <option value="/close-empty-accounts">Close Empty Accounts</option>
+              <option value="/deploy-new-token">Deploy a New Token</option>
               <option value="/get-sol-price">Get SOL Price</option>
-              <option value="/launch-pump-fun-token" disabled>Launch Token on Pump.fun</option>
-              <option value="/lend-tokens" disabled>Lend Tokens</option>
-              <option value="/stake-solayer" disabled>Stake SOL on Solayer</option>
-              <option value="/stake" disabled>Stake SOL</option>
-              <option value="/swap-tokens" disabled>Swap Tokens</option>
-              <option value="/zk-airdrop" disabled>Compressed Airdrop</option>
-              <option value="/nft/create-3land-collection" disabled>Create a 3Land NFT Collection</option>
-              <option value="/nft/create-3land-nft" disabled>Create a 3Land NFT</option>
-              <option value="/nft/create-collection" disabled>Create a New NFT Collection</option>
-              <option value="/perp/close-trade" disabled>Close a Perpetual Trade</option>
-              <option value="/perp/open-trade" disabled>Open a Perpetual Trade</option>
+              <option value="/launch-pump-fun-token">Launch Token on Pump.fun</option>
+              <option value="/lend-tokens">Lend Tokens</option>
+              <option value="/stake-solayer">Stake SOL on Solayer</option>
+              <option value="/stake">Stake SOL</option>
+              <option value="/swap-tokens">Swap Tokens</option>
+              <option value="/zk-airdrop">Compressed Airdrop</option>
+              <option value="/nft/create-3land-collection">Create a 3Land NFT Collection</option>
+              <option value="/nft/create-3land-nft">Create a 3Land NFT</option>
+              <option value="/nft/create-collection">Create a New NFT Collection</option>
+              <option value="/perp/close-trade">Close a Perpetual Trade</option>
+              <option value="/perp/open-trade">Open a Perpetual Trade</option>
             </select>
           </div>
 

@@ -233,6 +233,7 @@ const FlowEditor = () => {
 
   // Drawer updates
   const updateNodeData = (id, updatedData) => {
+    console.log('updateNodeData:', id, updatedData)
     setNodes((nds) =>
       nds.map((node) =>
         node.id === id ? { ...node, data: { ...node.data, ...updatedData } } : node
@@ -272,6 +273,7 @@ const FlowEditor = () => {
           defaultEdgeOptions={{ type: 'smoothstep' }} // Default to smoothstep
           connectionLineType="smoothstep"
           onNodesChange={(changes) => {
+            console.log('changes:', changes)
             onNodesChange(changes);
             saveFlowchart(nodes, edges);
           }}
