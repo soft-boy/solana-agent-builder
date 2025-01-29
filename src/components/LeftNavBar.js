@@ -13,7 +13,7 @@ import createAgent from '../lib/createAgent';
 import deleteAgent from '../lib/deleteAgent';
 import { Link, useNavigate, useParams, useLocation } from 'react-router';
 
-const LeftNavBar = () => {
+const LeftNavBar = ({ closeDemo }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { agentId: selectedAgentId } = useParams();
@@ -70,7 +70,7 @@ const LeftNavBar = () => {
                 return (
                   <div
                     key={agent.id}
-                    onClick={() => navigate(`/agent/${agent.id}`)}
+                    onClick={() => { closeDemo(); navigate(`/agent/${agent.id}`)} }
                     className={`w-full min-w-full flex items-center px-3 py-2 rounded-md cursor-pointer transition ${
                       isSelected
                         ? 'bg-primary text-white'

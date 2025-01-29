@@ -68,7 +68,7 @@ const Layout = () => {
       </header>
       <div className="flex flex-1">
         <aside className="w-64 bg-neutral text-white shadow-lg">
-          <LeftNavBar />
+          <LeftNavBar closeDemo={closeDemo} />
         </aside>
         <main className="flex-1 relative">
           <Outlet />
