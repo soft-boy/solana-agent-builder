@@ -20,7 +20,7 @@ const messageConvo = async (req, reqContext) => {
       },
     });
   }
-  
+
   const bodyText = await req.text()
   const body = JSON.parse(bodyText);
   const { message, conversationId } = body;
@@ -32,7 +32,7 @@ const messageConvo = async (req, reqContext) => {
 
   try {
     let context = { convo, message }
-    runFlowchart(flowchart, currentNodeId, context)
+    await runFlowchart(flowchart, currentNodeId, context)
   }
   catch {
     return new Response(

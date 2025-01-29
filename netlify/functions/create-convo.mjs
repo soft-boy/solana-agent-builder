@@ -30,7 +30,7 @@ const createConvo = async (req, reqContext) => {
   let { data: agent } = await getFlowchart(supabase, agentId)
   const flowchart = preprocess(agent.flowchart)
   let context = { convo }
-  runFlowchart(flowchart, startNodeId, context)
+  await runFlowchart(flowchart, startNodeId, context)
 
   return new Response(
     JSON.stringify({ convo, error }),
