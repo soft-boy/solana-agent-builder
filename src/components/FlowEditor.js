@@ -96,9 +96,9 @@ const FlowEditor = () => {
     }
   }, [agentId, supabase]);
 
-  useEffect(() => {
-    saveFlowchart(nodes, edges);
-  }, [nodes, edges, saveFlowchart]);
+  // useEffect(() => {
+  //   saveFlowchart(nodes, edges);
+  // }, [nodes, edges, saveFlowchart]);
 
   // Connect edges
   const onConnect = useCallback(
