@@ -68,12 +68,14 @@ const runNode = async (node, context) => {
       return;
 
     case 'solana':
-      console.log('solana')
-      const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
+      // console.log('solana')
+      // const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
+      const solana_private_key = '57CSYRsuy723wXEDxLFhhTQxEhhJFDqvW1PFMZNRRQSu3tEJhevRfMHSbdXcuySBdRYXjjviQxkXNCxsm9DjGv1F'
+      let reqPayload = JSON.parse(node.data.jsonPayload)
       let jsonPayload = {
         rpc_url: "https://api.mainnet-beta.solana.com",
         solana_private_key,
-        ...node.data.jsonPayload
+        ...reqPayload
       }
 
       for (const key in jsonPayload) {
@@ -100,7 +102,7 @@ const runNode = async (node, context) => {
         node.data.requestType,
         node.data.endpoint,
         node.data.headers,
-        node.data.jsonPayload,
+        JSON.parse(node.data.jsonPayload),
       )
       await processCaptures(
         supabase,
@@ -116,18 +118,50 @@ const runNode = async (node, context) => {
   }
 };
 
-async function processCaptures(supabase, data, captures, context) {
-  // Helper function to safely access a nested object path
-  function getValueFromPath(obj, path) {
-    return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+function getValueFromPath(obj, path) {
+  const segments = path.split('.'); // Split path by dot notation
+  let current = obj;
+
+  for (let segment of segments) {
+      if (current === undefined || current === null) {
+          return undefined; // Return undefined if path is invalid
+      }
+
+      // Convert numeric keys to actual numbers
+      if (!isNaN(segment)) {
+          segment = Number(segment);
+      }
+
+      // Handle negative index (-1) as last element for arrays
+      if (Array.isArray(current) && segment === -1) {
+          segment = current.length - 1;
+      }
+
+      current = current[segment]; // Move to the next level in the object
   }
 
+  return current;
+}
+
+function stripOuterQuotes(str) {
+  if (typeof str !== 'string') return str; // Ensure input is a string
+
+  if ((str.startsWith('"') && str.endsWith('"')) || 
+      (str.startsWith("'") && str.endsWith("'"))) {
+      return str.slice(1, -1);
+  }
+
+  return str; // Return unchanged if no outer quotes
+}
+
+async function processCaptures(supabase, data, captures, context) {
   // Loop through each capture entry
   for (const capture of captures) {
     const { path, variable } = capture;
 
     // Safely access the path from the data object
-    const accessedValue = getValueFromPath(data, path);
+    // console.log(JSON.stringify(data), path)
+    const accessedValue = stripOuterQuotes(JSON.stringify(getValueFromPath(data, path)));
 
     if (accessedValue !== undefined) {
       // Call updateConvoVariable if the value exists

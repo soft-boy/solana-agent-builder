@@ -105,6 +105,7 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
               <option value="/stake">Stake SOL</option>
               <option value="/swap-tokens">Swap Tokens</option>
               <option value="/zk-airdrop">Compressed Airdrop</option>
+              <option value="/react-chat">ReAct Agent</option>
               <option disabled value="/nft/create-3land-collection">Create a 3Land NFT Collection</option>
               <option disabled value="/nft/create-3land-nft">Create a 3Land NFT</option>
               <option disabled value="/nft/create-collection">Create a New NFT Collection</option>

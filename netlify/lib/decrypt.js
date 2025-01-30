@@ -1,7 +1,7 @@
 const SECRET_KEY = process.env.REACT_APP_ENCRYPTION_KEY; // Use a secure secret key
 
 export const getDecryptedPrivateKey = async (supabase, walletId) => {
-  console.log('getDecryptedPrivateKey', walletId)
+  // console.log('getDecryptedPrivateKey', walletId)
   try {
     // Fetch encrypted private key from Supabase
     const { data, error } = await supabase
