@@ -20,6 +20,7 @@ async function makeFetchRequest(requestType, endpoint, headers = [], jsonPayload
       options.body = jsonPayload;
     }
 
+    console.log('fetch:', endpoint, options)
     const response = await fetch(endpoint, options);
 
     // TODO: Handle non-2xx status codes with failure path

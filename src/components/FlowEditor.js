@@ -74,7 +74,9 @@ const FlowEditor = () => {
   }, [agentId, supabase, reactFlow, setNodes, setEdges]);
 
   // Save to supabase
-  const saveFlowchart = async (updatedNodes, updatedEdges) => {
+  const saveFlowchart = useCallback(async (updatedNodes, updatedEdges) => {
+    if (!updatedNodes.length && !updatedEdges.length) return;
+
     const flowchartData = {
       nodes: updatedNodes,
       edges: updatedEdges,
@@ -92,7 +94,11 @@ const FlowEditor = () => {
     } else {
       console.log('Flowchart saved successfully!');
     }
-  };
+  }, [agentId, supabase]);
+
+  useEffect(() => {
+    saveFlowchart(nodes, edges);
+  }, [nodes, edges, saveFlowchart]);
 
   // Connect edges
   const onConnect = useCallback(

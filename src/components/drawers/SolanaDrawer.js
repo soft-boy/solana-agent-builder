@@ -8,24 +8,43 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
   const { wallets } = useWallets(supabase);
   const [selectedWallet, setSelectedWallet] = useState('');
   const [actionType, setActionType] = useState('/get-sol-price');
+  const [captures, setCaptures] = useState([]);
 
   useEffect(() => {
     if (blockData) {
       setSelectedWallet(blockData.wallet || '');
       setActionType(blockData.action || '');
+      setCaptures(blockData.captures || []);
     }
   }, [blockData]);
 
   const handleSave = () => {
     console.log('updateBlock:', {
       wallet: selectedWallet,
-      action: actionType
+      action: actionType,
+      captures
     })
     updateBlock({
       wallet: selectedWallet,
-      action: actionType
+      action: actionType,
+      captures
     });
     closeDrawer();
+  };
+
+  const handleAddCapture = () => {
+    setCaptures([...captures, { path: '', variable: '' }]);
+  };
+
+  const handleCaptureChange = (index, field, value) => {
+    const updatedCaptures = [...captures];
+    updatedCaptures[index][field] = value;
+    setCaptures(updatedCaptures);
+  };
+
+  const handleRemoveCapture = (index) => {
+    const updatedCaptures = captures.filter((_, i) => i !== index);
+    setCaptures(updatedCaptures);
   };
 
   return (
@@ -94,6 +113,49 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
               <option value="/perp/close-trade">Close a Perpetual Trade</option>
               <option value="/perp/open-trade">Open a Perpetual Trade</option>
             </select>
+          </div>
+
+          {/* Capture Response */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text">Capture Response</span>
+            </label>
+            <div className="space-y-2">
+              {captures.map((capture, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    placeholder="path.to.value"
+                    className="input input-bordered w-1/2"
+                    value={capture.path}
+                    onChange={(e) =>
+                      handleCaptureChange(index, 'path', e.target.value)
+                    }
+                  />
+                  <input
+                    type="text"
+                    placeholder="variable_name"
+                    className="input input-bordered w-1/2"
+                    value={capture.variable}
+                    onChange={(e) =>
+                      handleCaptureChange(index, 'variable', e.target.value)
+                    }
+                  />
+                  <button
+                    className="btn btn-sm btn-error text-white"
+                    onClick={() => handleRemoveCapture(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                className="btn btn-sm text-white btn-primary mt-2"
+                onClick={handleAddCapture}
+              >
+                Add Capture
+              </button>
+            </div>
           </div>
 
           <div className="mt-4">

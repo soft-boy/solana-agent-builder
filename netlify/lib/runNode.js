@@ -3,10 +3,12 @@ import createMessage from "./supabase/createMessage";
 import updateConvoNode from './supabase/updateConvoNode';
 import updateConvoVariable from './supabase/updateConvoVariable';
 import makeFetchRequest from './supabase/makeFetchRequest';
+import { getDecryptedPrivateKey } from './decrypt';
 import OpenAI from "openai";
 
 const openai = new OpenAI();
 
+const solanaServerUrl = "https://solana-agent-server.onrender.com";
 const supabaseUrl = "https://hcdsvvofqpfutulgdtlj.supabase.co";
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -67,11 +69,28 @@ const runNode = async (node, context) => {
 
     case 'solana':
       console.log('solana')
+      const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
+      const jsonPayload = {
+        rpc_url: "https://api.devnet.solana.com",
+        solana_private_key,
+      }
+      const solResponseData = await makeFetchRequest(
+        'POST',
+        `${solanaServerUrl}${node.data.action}`,
+        [],
+        JSON.stringify(jsonPayload),
+      )
+      await processCaptures(
+        supabase,
+        solResponseData,
+        node.data.captures,
+        context
+      )
       return;
 
     case 'api':
       console.log('api')
-      const data = await makeFetchRequest(
+      const apiResponseData = await makeFetchRequest(
         node.data.requestType,
         node.data.endpoint,
         node.data.headers,
@@ -79,7 +98,7 @@ const runNode = async (node, context) => {
       )
       await processCaptures(
         supabase,
-        data,
+        apiResponseData,
         node.data.captures,
         context
       )

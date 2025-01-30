@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PublicKey, Keypair } from '@solana/web3.js';
 import useSupabase from '../../hooks/useSupabase';
 import { encryptPrivateKey } from '../../lib/encryption';
+import bs58 from 'bs58';
 
 const SettingsView = () => {
   const { supabase } = useSupabase();
@@ -31,8 +32,9 @@ const SettingsView = () => {
     try {
       // Generate a new Solana wallet
       const keypair = Keypair.generate();
-      const publicKey = keypair.publicKey.toString();
-      const privateKey = JSON.stringify(Array.from(keypair.secretKey));
+      const publicKey = keypair.publicKey.toBase58();
+      const privateKey = bs58.encode(keypair.secretKey)
+      // console.log(privateKey)
 
       // Encrypt the private key
       const { encrypted, iv } = await encryptPrivateKey(privateKey);
@@ -53,6 +55,7 @@ const SettingsView = () => {
         fetchWallets(); // Refresh the wallet list
       }
     } catch (err) {
+      console.log(err)
       setError('Wallet creation or encryption failed');
     }
 
