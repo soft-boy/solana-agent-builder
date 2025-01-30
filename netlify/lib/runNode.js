@@ -68,9 +68,8 @@ const runNode = async (node, context) => {
       return;
 
     case 'solana':
-      // console.log('solana')
-      // const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
-      const solana_private_key = '57CSYRsuy723wXEDxLFhhTQxEhhJFDqvW1PFMZNRRQSu3tEJhevRfMHSbdXcuySBdRYXjjviQxkXNCxsm9DjGv1F'
+      console.log('solana')
+      const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
       let reqPayload = JSON.parse(node.data.jsonPayload)
       let jsonPayload = {
         rpc_url: "https://api.mainnet-beta.solana.com",
@@ -102,7 +101,7 @@ const runNode = async (node, context) => {
         node.data.requestType,
         node.data.endpoint,
         node.data.headers,
-        JSON.parse(node.data.jsonPayload),
+        node.data.jsonPayload,
       )
       await processCaptures(
         supabase,

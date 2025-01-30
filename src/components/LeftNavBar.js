@@ -9,8 +9,10 @@ import {
 } from 'react-icons/fa';
 import { IoLogOutOutline } from "react-icons/io5";
 import { useSupabase } from '../lib/SupabaseContext';
-import createAgent from '../lib/createAgent';
+// import createAgent from '../lib/createAgent';
 import deleteAgent from '../lib/deleteAgent';
+import AddAgentModal from './AddAgentModal';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 import { Link, useNavigate, useParams, useLocation } from 'react-router';
 
 const LeftNavBar = ({ closeDemo }) => {
@@ -24,6 +26,7 @@ const LeftNavBar = ({ closeDemo }) => {
   const [newAgentName, setNewAgentName] = useState('');
   const [agentToDelete, setAgentToDelete] = useState(null);
   const [confirmName, setConfirmName] = useState('');
+  const closeAddModal = () => setAddModalOpen(false)
 
   const fetchAgents = async () => {
     const { data, error } = await supabase
@@ -36,7 +39,7 @@ const LeftNavBar = ({ closeDemo }) => {
 
   useEffect(() => {
     fetchAgents();
-  }, [supabase]);
+  }, [supabase, isAddModalOpen, agentToDelete]);
 
   return (
     <div className="w-64 h-full bg-neutral text-white shadow-lg flex flex-col justify-between">
@@ -152,6 +155,8 @@ const LeftNavBar = ({ closeDemo }) => {
           <p className="text-sm italic text-gray-400">Not logged in</p>
         )}
       </div>
+      <AddAgentModal isOpen={isAddModalOpen} close={closeAddModal} />
+      <ConfirmDeleteModal isOpen={!!agentToDelete} close={() => setAgentToDelete(null)} agent={agentToDelete} />
     </div>
   );
 };
