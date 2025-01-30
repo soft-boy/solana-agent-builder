@@ -8,25 +8,23 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
   const { wallets } = useWallets(supabase);
   const [selectedWallet, setSelectedWallet] = useState('');
   const [actionType, setActionType] = useState('/get-sol-price');
+  const [jsonPayload, setJsonPayload] = useState('');
   const [captures, setCaptures] = useState([]);
 
   useEffect(() => {
     if (blockData) {
       setSelectedWallet(blockData.wallet || '');
       setActionType(blockData.action || '');
+      setJsonPayload(blockData.jsonPayload || '');
       setCaptures(blockData.captures || []);
     }
   }, [blockData]);
 
   const handleSave = () => {
-    console.log('updateBlock:', {
-      wallet: selectedWallet,
-      action: actionType,
-      captures
-    })
     updateBlock({
       wallet: selectedWallet,
       action: actionType,
+      jsonPayload,
       captures
     });
     closeDrawer();
@@ -107,12 +105,26 @@ const SolanaDrawer = ({ isOpen, blockData, closeDrawer, updateBlock }) => {
               <option value="/stake">Stake SOL</option>
               <option value="/swap-tokens">Swap Tokens</option>
               <option value="/zk-airdrop">Compressed Airdrop</option>
-              <option value="/nft/create-3land-collection">Create a 3Land NFT Collection</option>
-              <option value="/nft/create-3land-nft">Create a 3Land NFT</option>
-              <option value="/nft/create-collection">Create a New NFT Collection</option>
-              <option value="/perp/close-trade">Close a Perpetual Trade</option>
-              <option value="/perp/open-trade">Open a Perpetual Trade</option>
+              <option disabled value="/nft/create-3land-collection">Create a 3Land NFT Collection</option>
+              <option disabled value="/nft/create-3land-nft">Create a 3Land NFT</option>
+              <option disabled value="/nft/create-collection">Create a New NFT Collection</option>
+              <option disabled value="/perp/close-trade">Close a Perpetual Trade</option>
+              <option disabled value="/perp/open-trade">Open a Perpetual Trade</option>
             </select>
+          </div>
+
+          {/* JSON Payload (visible only for POST) */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text">JSON Payload</span>
+            </label>
+            <textarea
+              placeholder="Enter JSON payload"
+              className="textarea textarea-bordered"
+              rows="5"
+              value={jsonPayload}
+              onChange={(e) => setJsonPayload(e.target.value)}
+            ></textarea>
           </div>
 
           {/* Capture Response */}

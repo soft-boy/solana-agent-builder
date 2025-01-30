@@ -71,8 +71,9 @@ const runNode = async (node, context) => {
       console.log('solana')
       const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
       const jsonPayload = {
-        rpc_url: "https://api.devnet.solana.com",
+        rpc_url: "https://api.mainnet-beta.solana.com",
         solana_private_key,
+        ...node.data.jsonPayload
       }
       const solResponseData = await makeFetchRequest(
         'POST',
