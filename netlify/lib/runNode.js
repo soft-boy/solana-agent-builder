@@ -70,11 +70,16 @@ const runNode = async (node, context) => {
     case 'solana':
       console.log('solana')
       const solana_private_key = await getDecryptedPrivateKey(supabase, node.data.wallet)
-      const jsonPayload = {
+      let jsonPayload = {
         rpc_url: "https://api.mainnet-beta.solana.com",
         solana_private_key,
         ...node.data.jsonPayload
       }
+
+      for (const key in jsonPayload) {
+        jsonPayload[key] = replacePlaceholders(variableContext, jsonPayload[key])
+      }
+
       const solResponseData = await makeFetchRequest(
         'POST',
         `${solanaServerUrl}${node.data.action}`,
